@@ -1,0 +1,122 @@
+import 'dart:convert';
+
+import 'package:equatable/equatable.dart';
+import 'package:sync_feature/core/enums/DB_Table.dart';
+import 'package:sync_feature/core/enums/operation_action.dart';
+import 'package:sync_feature/core/enums/user_role.dart';
+import 'package:sync_feature/core/isar_service/collections/operation_collection.dart';
+import 'package:sync_feature/sync_engine/domain/entities/operation.dart';
+
+class OperationModel extends Equatable {
+  final int? id;
+  final String centerId;
+  final String operationId;
+  final String entityId;
+  final OperationAction action;
+  final DBTable table;
+  final Map<String, dynamic> json;
+  final int version;
+  final UserRole userRole;
+  final String createdBy;
+  final DateTime createdAt;
+
+  const OperationModel({
+    this.id,
+    required this.operationId,
+    required this.entityId,
+    required this.centerId,
+    required this.action,
+    required this.table,
+    required this.json,
+    required this.version,
+    required this.userRole,
+    required this.createdBy,
+    required this.createdAt,
+  });
+  @override
+  List<Object?> get props => [
+    operationId,
+    id,
+    entityId,
+    centerId,
+    action,
+    table,
+    json,
+    version,
+    userRole,
+    createdBy,
+    createdAt,
+  ];
+
+  OperationCollection toCollection() {
+    late final Map<String, dynamic> jsonWithoutDataTime = {};
+    for (final v in json.entries) {
+      if (v.value is DateTime) {
+        jsonWithoutDataTime[v.key] = (v.value as DateTime).toIso8601String();
+      } else {
+        jsonWithoutDataTime[v.key] = v.value;
+      }
+    }
+    return OperationCollection()
+      ..operationId = operationId
+      ..entityId = entityId
+      ..centerId = centerId
+      ..action = action.name
+      ..table = table.name
+      ..payload = jsonEncode(jsonWithoutDataTime)
+      ..version = version
+      ..userRole = userRole.name
+      ..createdBy = createdBy
+      ..createdAt = createdAt;
+  }
+
+  Operation toOperation() {
+    return Operation(
+      id: operationId,
+      entityId: entityId,
+      centerId: centerId,
+      action: action,
+      table: table,
+      json: json,
+      version: version,
+      userRole: userRole,
+      createdBy: createdBy,
+      createdAt: createdAt,
+    );
+  }
+
+  factory OperationModel.fromOperation(Operation operation) {
+    return OperationModel(
+      operationId: operation.id,
+      entityId: operation.entityId,
+      centerId: operation.centerId,
+      action: operation.action,
+      table: operation.table,
+      json: operation.json,
+      version: operation.version,
+      userRole: operation.userRole,
+      createdBy: operation.createdBy,
+      createdAt: operation.createdAt,
+    );
+  }
+
+  factory OperationModel.fromCollection(
+    OperationCollection operationCollection,
+  ) {
+    return OperationModel(
+      id: operationCollection.id,
+      operationId: operationCollection.operationId,
+      entityId: operationCollection.entityId,
+      centerId: operationCollection.centerId,
+      action: OperationAction.getOperationActionFromString(
+        operationCollection.action,
+      ),
+      table: DBTable.getDBTableFromString(operationCollection.table),
+      json: jsonDecode(operationCollection.payload),
+      version: operationCollection.version,
+      userRole: UserRole.getUserRoleFromString(operationCollection.userRole),
+      createdBy: operationCollection.createdBy,
+      createdAt: operationCollection.createdAt,
+    );
+  }
+}
