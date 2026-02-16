@@ -3,9 +3,11 @@ import 'package:sync_feature/core/isar_service/collections/table_three_collectio
 import 'package:sync_feature/core/isar_service/isar_service.dart'
     show IsarService;
 import 'package:sync_feature/sync_engine/data/data_source/local/local_table_datasource.dart';
+import 'package:sync_feature/sync_engine/data/data_source/models/table_three_model.dart';
 
 import '../../../../core/enums/DB_Table.dart';
 import '../../../../core/helper.dart';
+import '../../../domain/entities/standard_table_record.dart';
 
 class LocalTableThreeDatasource implements LocalTableDatasource {
   @override
@@ -25,7 +27,7 @@ class LocalTableThreeDatasource implements LocalTableDatasource {
   }
 
   @override
-  Future<List<String>> getEntitiesIdsByFornKeyBulk(
+  Future<List<String>> getForeignkeyEntitiesIdsBulk(
     DBTable parentTable,
     List<String> parentsIds, {
     bool test = false,
@@ -64,4 +66,78 @@ class LocalTableThreeDatasource implements LocalTableDatasource {
 
   @override
   DBTable get table => DBTable.table3;
+
+  @override
+  Future<void> softDeleteEntities(List<String> ids) async {
+    final uniqueIds = ids.toSet();
+    List<TableThreeCollection> results = [];
+    const batchSize = 200;
+    for (final batch in Helper.chunk(uniqueIds.toList(), batchSize)) {
+      final result = await IsarService.isar.tableThreeCollections
+          .filter()
+          .anyOf(batch, (q, id) => q.entityIdEqualTo(id))
+          .findAll();
+      results = [...results, ...result];
+    }
+
+    for (final r in results) {
+      r.isDeleted = true;
+    }
+
+    await IsarService.isar.writeTxn(() async {
+      await IsarService.isar.tableThreeCollections.putAll(results);
+    });
+  }
+
+  @override
+  Future<void> updateEntity<T>(T model) async {
+    final modelThree = model as TableThreeModel;
+
+    final oldCollection = await IsarService.isar.tableThreeCollections
+        .filter()
+        .entityIdEqualTo(modelThree.entityId)
+        .findFirst();
+
+    if (oldCollection != null) {
+      final newCollection = TableThreeCollection()
+        ..id = oldCollection.id
+        ..entityId = modelThree.entityId
+        ..centerId = modelThree.centerId
+        ..byDevice = modelThree.byDevice
+        ..version = modelThree.version
+        ..createdAt = modelThree.createdAt
+        ..updatedAt = modelThree.updatedAt
+        ..byUser = modelThree.byUser
+        ..isDeleted = modelThree.isDeleted
+        ..message = modelThree.message
+        ..forKeyTableTwo = modelThree.forKeyTableTwo;
+      await IsarService.isar.writeTxn(() async {
+        await IsarService.isar.tableThreeCollections.put(newCollection);
+      });
+    } else {
+      throw Exception(
+        'there is no record in db for ${modelThree.entityId} at ${DBTable.table3.name} table',
+      );
+    }
+  }
+
+  @override
+  Future<StandardTableRecord?> getEntity(String entityId) async {
+    final record = await IsarService.isar.tableThreeCollections
+        .filter()
+        .entityIdEqualTo(entityId)
+        .findFirst();
+    if (record == null) return null;
+    return TableThreeModel.fromCollection(record);
+  }
+
+  @override
+  Future<void> insertEntity<T>(T model) async {
+    final tableThreeModel = model as TableThreeModel;
+    await IsarService.isar.writeTxn(() async {
+      await IsarService.isar.tableThreeCollections.put(
+        tableThreeModel.toCollection(),
+      );
+    });
+  }
 }

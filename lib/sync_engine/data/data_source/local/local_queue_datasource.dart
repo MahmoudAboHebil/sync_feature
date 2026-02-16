@@ -1,8 +1,11 @@
 import 'package:isar/isar.dart';
 import 'package:sync_feature/core/enums/DB_Table.dart';
+import 'package:sync_feature/core/enums/operation_action.dart';
 import 'package:sync_feature/core/isar_service/collections/operation_collection.dart';
 import 'package:sync_feature/core/isar_service/isar_service.dart';
 import 'package:sync_feature/sync_engine/data/data_source/models/operation_model.dart';
+
+import '../../../../core/helper.dart';
 
 class LocalQueueDatasource {
   Future<void> insertToQueue(OperationModel operation) async {
@@ -63,6 +66,34 @@ class LocalQueueDatasource {
       await IsarService.isar.operationCollections
           .filter()
           .entityIdEqualTo(entityId)
+          .deleteAll();
+    });
+  }
+
+  Future<void> removeOperationsByEntitiesIds(List<String> entitiesIds) async {
+    final uniqueIds = entitiesIds.toSet();
+    const batchSize = 200;
+
+    for (final batch in Helper.chunk(uniqueIds.toList(), batchSize)) {
+      await IsarService.isar.writeTxn(() async {
+        await IsarService.isar.operationCollections
+            .filter()
+            .anyOf(batch, (q, id) => q.entityIdEqualTo(id))
+            .deleteAll();
+      });
+    }
+  }
+
+  Future<void> removeOperationsContainsAction(
+    String entityId,
+    OperationAction action,
+  ) async {
+    await IsarService.isar.writeTxn(() async {
+      await IsarService.isar.operationCollections
+          .filter()
+          .entityIdEqualTo(entityId)
+          .and()
+          .actionEqualTo(action.name)
           .deleteAll();
     });
   }

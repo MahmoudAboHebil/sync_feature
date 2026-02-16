@@ -3,9 +3,11 @@ import 'package:sync_feature/core/isar_service/collections/table_four_collection
 import 'package:sync_feature/core/isar_service/isar_service.dart'
     show IsarService;
 import 'package:sync_feature/sync_engine/data/data_source/local/local_table_datasource.dart';
+import 'package:sync_feature/sync_engine/data/data_source/models/table_four_model.dart';
 
 import '../../../../core/enums/DB_Table.dart';
 import '../../../../core/helper.dart';
+import '../../../domain/entities/standard_table_record.dart';
 
 class LocalTableFourDatasource implements LocalTableDatasource {
   @override
@@ -25,7 +27,7 @@ class LocalTableFourDatasource implements LocalTableDatasource {
   }
 
   @override
-  Future<List<String>> getEntitiesIdsByFornKeyBulk(
+  Future<List<String>> getForeignkeyEntitiesIdsBulk(
     DBTable parentTable,
     List<String> parentsIds, {
     bool test = false,
@@ -63,4 +65,77 @@ class LocalTableFourDatasource implements LocalTableDatasource {
 
   @override
   DBTable get table => DBTable.table4;
+  @override
+  Future<void> softDeleteEntities(List<String> ids) async {
+    final uniqueIds = ids.toSet();
+    List<TableFourCollection> results = [];
+    const batchSize = 200;
+    for (final batch in Helper.chunk(uniqueIds.toList(), batchSize)) {
+      final result = await IsarService.isar.tableFourCollections
+          .filter()
+          .anyOf(batch, (q, id) => q.entityIdEqualTo(id))
+          .findAll();
+      results = [...results, ...result];
+    }
+
+    for (final r in results) {
+      r.isDeleted = true;
+    }
+
+    await IsarService.isar.writeTxn(() async {
+      await IsarService.isar.tableFourCollections.putAll(results);
+    });
+  }
+
+  @override
+  Future<void> updateEntity<T>(T model) async {
+    final modelFour = model as TableFourModel;
+
+    final oldCollection = await IsarService.isar.tableFourCollections
+        .filter()
+        .entityIdEqualTo(modelFour.entityId)
+        .findFirst();
+
+    if (oldCollection != null) {
+      final newCollection = TableFourCollection()
+        ..id = oldCollection.id
+        ..entityId = modelFour.entityId
+        ..centerId = modelFour.centerId
+        ..byDevice = modelFour.byDevice
+        ..version = modelFour.version
+        ..createdAt = modelFour.createdAt
+        ..updatedAt = modelFour.updatedAt
+        ..byUser = modelFour.byUser
+        ..isDeleted = modelFour.isDeleted
+        ..message = modelFour.message
+        ..forKeyTableTwo = modelFour.forKeyTableTwo;
+      await IsarService.isar.writeTxn(() async {
+        await IsarService.isar.tableFourCollections.put(newCollection);
+      });
+    } else {
+      throw Exception(
+        'there is no record in db for ${model.entityId} at ${DBTable.table4.name} table',
+      );
+    }
+  }
+
+  @override
+  Future<StandardTableRecord?> getEntity(String entityId) async {
+    final record = await IsarService.isar.tableFourCollections
+        .filter()
+        .entityIdEqualTo(entityId)
+        .findFirst();
+    if (record == null) return null;
+    return TableFourModel.fromCollection(record);
+  }
+
+  @override
+  Future<void> insertEntity<T>(T model) async {
+    final tableFourModel = model as TableFourModel;
+    await IsarService.isar.writeTxn(() async {
+      await IsarService.isar.tableFourCollections.put(
+        tableFourModel.toCollection(),
+      );
+    });
+  }
 }

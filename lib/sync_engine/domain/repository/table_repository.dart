@@ -23,15 +23,11 @@ abstract class TableRepository {
     Operation operation,
     String deviceId,
   );
-  Future<Either<Failure, Map<String, dynamic>>> getEntityFromTable(
+  Future<Either<Failure, Map<String, dynamic>?>> getEntityFromTable(
     DBTable table,
     String entityId,
   );
   Future<Either<Failure, void>> insertEntityToTable(
-    DBTable table,
-    Map<String, dynamic> json,
-  );
-  Future<Either<Failure, void>> updateTableEntity(
     DBTable table,
     Map<String, dynamic> json,
   );

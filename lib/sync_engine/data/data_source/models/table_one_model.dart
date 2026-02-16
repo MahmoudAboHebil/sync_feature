@@ -41,6 +41,19 @@ class TableOneModel extends StandardTableRecord with EquatableMixin {
       message: json['message'],
     );
   }
+  factory TableOneModel.fromCollection(TableOneCollection collection) {
+    return TableOneModel(
+      entityId: collection.entityId,
+      centerId: collection.centerId,
+      byUser: collection.byUser,
+      byDevice: collection.byDevice,
+      isDeleted: collection.isDeleted,
+      version: collection.version,
+      createdAt: collection.createdAt,
+      updatedAt: collection.updatedAt,
+      message: collection.message,
+    );
+  }
 
   @override
   Map<String, dynamic> toJson() {

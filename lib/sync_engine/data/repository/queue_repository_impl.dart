@@ -14,6 +14,37 @@ class QueueRepositoryImpl extends QueueRepository {
   @override
   Future<Either<Failure, void>> addOperationToQueue(Operation operation) async {
     try {
+      List<OperationModel> oldOperations = await _localQueueDatasource
+          .getOperationsByEntityAscending(operation.entityId);
+      final isThereCreatedOpers = oldOperations
+          .map((e) => e.action == OperationAction.create)
+          .toList()
+          .isNotEmpty;
+      final isThereUpdatedOpers = oldOperations
+          .map((e) => e.action == OperationAction.update)
+          .toList()
+          .isNotEmpty;
+
+      if (isThereCreatedOpers) {
+        if (operation.action == OperationAction.update) {
+          if (isThereUpdatedOpers) {
+            await _localQueueDatasource.removeOperationsContainsAction(
+              operation.entityId,
+              OperationAction.update,
+            );
+          }
+          await _localQueueDatasource.insertToQueue(
+            OperationModel.fromOperation(operation),
+          );
+          return Right(null);
+        } else if (operation.action == OperationAction.delete) {
+          await _localQueueDatasource.removeOperationsByEntity(
+            operation.entityId,
+          );
+          return Right(null);
+        }
+      }
+
       final isEntityDeleted = (operation.json["is_deleted"] as bool);
       if (isEntityDeleted && operation.action == OperationAction.update) {
         return Right(null);

@@ -45,6 +45,20 @@ class TableTwoModel extends StandardTableRecord with EquatableMixin {
       message: json['message'],
     );
   }
+  factory TableTwoModel.fromCollection(TableTwoCollection collection) {
+    return TableTwoModel(
+      entityId: collection.entityId,
+      centerId: collection.centerId,
+      byUser: collection.byUser,
+      byDevice: collection.byDevice,
+      isDeleted: collection.isDeleted,
+      version: collection.version,
+      createdAt: collection.createdAt,
+      updatedAt: collection.updatedAt,
+      message: collection.message,
+      forkeyTableOne: collection.forKeyTableOne,
+    );
+  }
 
   @override
   Map<String, dynamic> toJson() {

@@ -48,6 +48,20 @@ class TableThreeModel extends StandardTableRecord with EquatableMixin {
     );
   }
 
+  factory TableThreeModel.fromCollection(TableThreeCollection collection) {
+    return TableThreeModel(
+      entityId: collection.entityId,
+      centerId: collection.centerId,
+      byUser: collection.byUser,
+      byDevice: collection.byDevice,
+      isDeleted: collection.isDeleted,
+      version: collection.version,
+      createdAt: collection.createdAt,
+      updatedAt: collection.updatedAt,
+      message: collection.message,
+      forKeyTableTwo: collection.forKeyTableTwo,
+    );
+  }
   @override
   Map<String, dynamic> toJson() {
     return {
