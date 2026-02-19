@@ -7,7 +7,7 @@ import 'package:sync_feature/sync_engine/data/data_source/models/table_five_mode
 
 import '../../../../core/enums/DB_Table.dart';
 import '../../../../core/helper.dart';
-import '../../../domain/entities/standard_table_record.dart';
+import '../models/standard_table_record_model.dart';
 
 class LocalTableFiveDatasource implements LocalTableDatasource {
   @override
@@ -34,7 +34,7 @@ class LocalTableFiveDatasource implements LocalTableDatasource {
   }) async {
     Set<String> ids = {};
     List<TableFiveCollection> collections = [];
-    if (parentTable == DBTable.table3) {
+    if (parentTable == DBTable.table_three) {
       if (test) {
         collections = tableFive.where((coll) {
           final x = parentsIds.contains(coll.forKeyTableThree);
@@ -56,7 +56,7 @@ class LocalTableFiveDatasource implements LocalTableDatasource {
       }
 
       return ids.toList();
-    } else if (parentTable == DBTable.table4) {
+    } else if (parentTable == DBTable.table_four) {
       if (test) {
         collections = tableFive.where((coll) {
           final x = parentsIds.contains(coll.forKeyTableFour);
@@ -84,7 +84,7 @@ class LocalTableFiveDatasource implements LocalTableDatasource {
   }
 
   @override
-  DBTable get table => DBTable.table5;
+  DBTable get table => DBTable.table_five;
 
   @override
   Future<void> softDeleteEntities(List<String> ids) async {
@@ -136,13 +136,13 @@ class LocalTableFiveDatasource implements LocalTableDatasource {
       });
     } else {
       throw Exception(
-        'there is no record in db for ${model.entityId} at ${DBTable.table5.name} table',
+        'there is no record in db for ${model.entityId} at ${DBTable.table_five.name} table',
       );
     }
   }
 
   @override
-  Future<StandardTableRecord?> getEntity(String entityId) async {
+  Future<StandardTableRecordModel?> getEntity(String entityId) async {
     final record = await IsarService.isar.tableFiveCollections
         .filter()
         .entityIdEqualTo(entityId)

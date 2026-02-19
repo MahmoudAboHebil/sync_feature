@@ -38,13 +38,19 @@ dependencies:
   dart_either: ^2.0.0
   equatable: ^2.0.8
   isar: 3.1.0
-  isar_flutter_libs: 3.1.0
+  isar_flutter_libs:
+    path: packages/isar_flutter_libs-3.1.0
   path_provider: ^2.1.5
   mocktail: ^1.0.4
+  supabase_flutter: ^2.12.0
+  http: ^1.6.0
+  supabase: ^2.10.2
 
 
 dev_dependencies:
   flutter_test:
+    sdk: flutter
+  integration_test:
     sdk: flutter
 
   # The "flutter_lints" package below contains a set of recommended lints to

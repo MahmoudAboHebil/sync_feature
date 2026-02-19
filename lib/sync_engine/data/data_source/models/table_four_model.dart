@@ -1,9 +1,10 @@
 import 'package:equatable/equatable.dart';
-import 'package:sync_feature/sync_engine/domain/entities/standard_table_record.dart';
+import 'package:sync_feature/sync_engine/data/data_source/models/standard_table_record_model.dart';
 
 import '../../../../core/isar_service/collections/table_four_collection.dart';
+import '../../../domain/entities/table_four.dart';
 
-class TableFourModel extends StandardTableRecord with EquatableMixin {
+class TableFourModel extends StandardTableRecordModel with EquatableMixin {
   final String message;
   final String forKeyTableTwo;
   const TableFourModel({
@@ -34,8 +35,8 @@ class TableFourModel extends StandardTableRecord with EquatableMixin {
   ];
   factory TableFourModel.fromJson(Map<String, dynamic> json) {
     return TableFourModel(
-      entityId: json['entity_id'],
-      forKeyTableTwo: json['forkey_table_two'],
+      entityId: json['id'],
+      forKeyTableTwo: json['table_two_id'],
       centerId: json['center_id'],
       byUser: json['by_user'],
       byDevice: json['by_device'],
@@ -60,19 +61,33 @@ class TableFourModel extends StandardTableRecord with EquatableMixin {
       forKeyTableTwo: collection.forKeyTableTwo,
     );
   }
+  factory TableFourModel.fromEntity(TableFour entity) {
+    return TableFourModel(
+      entityId: entity.entityId,
+      centerId: entity.centerId,
+      byUser: entity.byUser,
+      byDevice: entity.byDevice,
+      isDeleted: entity.isDeleted,
+      version: entity.version,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      message: entity.message,
+      forKeyTableTwo: entity.forKeyTableTwo,
+    );
+  }
 
   @override
   Map<String, dynamic> toJson() {
     return {
-      'entity_id': entityId,
-      'forkey_table_two': forKeyTableTwo,
+      'id': entityId,
+      'table_two_id': forKeyTableTwo,
       'center_id': centerId,
       'by_user': byUser,
       'by_device': byDevice,
       'is_deleted': isDeleted,
       'version': version,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
+      'created_at': createdAt.toUtc().toIso8601String(),
+      'updated_at': updatedAt.toUtc().toIso8601String(),
       'message': message,
     };
   }

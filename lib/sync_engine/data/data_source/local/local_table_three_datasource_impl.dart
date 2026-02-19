@@ -7,7 +7,7 @@ import 'package:sync_feature/sync_engine/data/data_source/models/table_three_mod
 
 import '../../../../core/enums/DB_Table.dart';
 import '../../../../core/helper.dart';
-import '../../../domain/entities/standard_table_record.dart';
+import '../models/standard_table_record_model.dart';
 
 class LocalTableThreeDatasource implements LocalTableDatasource {
   @override
@@ -35,7 +35,7 @@ class LocalTableThreeDatasource implements LocalTableDatasource {
     Set<String> ids = {};
     List<TableThreeCollection> collections = [];
 
-    if (parentTable == DBTable.table2) {
+    if (parentTable == DBTable.table_two) {
       if (test) {
         collections = tableThree.where((coll) {
           final x = parentsIds.contains(coll.forKeyTableTwo);
@@ -65,7 +65,7 @@ class LocalTableThreeDatasource implements LocalTableDatasource {
   }
 
   @override
-  DBTable get table => DBTable.table3;
+  DBTable get table => DBTable.table_three;
 
   @override
   Future<void> softDeleteEntities(List<String> ids) async {
@@ -116,13 +116,13 @@ class LocalTableThreeDatasource implements LocalTableDatasource {
       });
     } else {
       throw Exception(
-        'there is no record in db for ${modelThree.entityId} at ${DBTable.table3.name} table',
+        'there is no record in db for ${modelThree.entityId} at ${DBTable.table_three.name} table',
       );
     }
   }
 
   @override
-  Future<StandardTableRecord?> getEntity(String entityId) async {
+  Future<StandardTableRecordModel?> getEntity(String entityId) async {
     final record = await IsarService.isar.tableThreeCollections
         .filter()
         .entityIdEqualTo(entityId)

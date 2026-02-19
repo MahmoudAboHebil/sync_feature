@@ -13,11 +13,11 @@ import '../isar_service/collections/table_three_collection.dart';
 import '../isar_service/collections/table_two_collection.dart';
 
 enum DBTable {
-  table1,
-  table2,
-  table3,
-  table4,
-  table5;
+  table_one,
+  table_two,
+  table_three,
+  table_four,
+  table_five;
 
   static DBTable getDBTableFromString(String table) {
     for (final tab in DBTable.values) {
@@ -34,25 +34,25 @@ enum DBTable {
 }
 
 const Map<DBTable, Map<String, List<DBTable>>> tabelRelationsNotNull = {
-  DBTable.table1: {
-    "forward": [DBTable.table2],
+  DBTable.table_one: {
+    "forward": [DBTable.table_two],
     "backword": [],
   },
-  DBTable.table2: {
-    "forward": [DBTable.table3, DBTable.table4],
-    "backword": [DBTable.table1],
+  DBTable.table_two: {
+    "forward": [DBTable.table_three, DBTable.table_four],
+    "backword": [DBTable.table_one],
   },
-  DBTable.table3: {
-    "forward": [DBTable.table5],
-    "backword": [DBTable.table2],
+  DBTable.table_three: {
+    "forward": [DBTable.table_five],
+    "backword": [DBTable.table_two],
   },
-  DBTable.table4: {
-    "forward": [DBTable.table5],
-    "backword": [DBTable.table2],
+  DBTable.table_four: {
+    "forward": [DBTable.table_five],
+    "backword": [DBTable.table_two],
   },
-  DBTable.table5: {
+  DBTable.table_five: {
     "forward": [],
-    "backword": [DBTable.table3, DBTable.table4],
+    "backword": [DBTable.table_three, DBTable.table_four],
   },
 };
 

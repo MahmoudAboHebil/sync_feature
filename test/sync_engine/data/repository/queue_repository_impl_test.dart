@@ -77,7 +77,7 @@ void main() {
         entityId: 'enti-3',
         centerId: 'center-1',
         action: OperationAction.create,
-        table: DBTable.table2,
+        table: DBTable.table_two,
         json: {
           'id': 'enti-3',
           'data': 0,
@@ -171,7 +171,7 @@ void main() {
         entityId: 'enti-2',
         centerId: 'center-1',
         action: OperationAction.update,
-        table: DBTable.table2,
+        table: DBTable.table_two,
         json: {
           'id': 'enti-2',
           'data': 0,
@@ -266,7 +266,7 @@ void main() {
         entityId: 'enti-2',
         centerId: 'center-1',
         action: OperationAction.update,
-        table: DBTable.table2,
+        table: DBTable.table_two,
         json: {
           'id': 'enti-2',
           'data': 0,
@@ -373,10 +373,10 @@ void main() {
     ];
 
     when(
-      () => mockLocal.getPendingTableOperationAscending(DBTable.table2),
+      () => mockLocal.getPendingTableOperationAscending(DBTable.table_two),
     ).thenAnswer((_) async {
       final list = mainQueue.where((coll) {
-        return coll.table == DBTable.table2.name;
+        return coll.table == DBTable.table_two.name;
       }).toList();
       list.sort((a, b) => a.createdAt.compareTo(b.createdAt));
       final operationsModels = list
@@ -384,9 +384,13 @@ void main() {
           .toList();
       return operationsModels;
     });
-    final result = await repository.getPendingOperationOrdered(DBTable.table2);
+    final result = await repository.getPendingOperationOrdered(
+      DBTable.table_two,
+    );
     expect(result.getOrThrow().length, 2);
     expect(result.getOrThrow().first.id, 'oper-7');
-    verify(() => mockLocal.getPendingTableOperationAscending(DBTable.table2));
+    verify(
+      () => mockLocal.getPendingTableOperationAscending(DBTable.table_two),
+    );
   });
 }

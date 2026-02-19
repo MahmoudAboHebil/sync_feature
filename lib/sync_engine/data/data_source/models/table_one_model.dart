@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:sync_feature/core/isar_service/collections/table_one_collection.dart';
-import 'package:sync_feature/sync_engine/domain/entities/standard_table_record.dart';
+import 'package:sync_feature/sync_engine/data/data_source/models/standard_table_record_model.dart';
+import 'package:sync_feature/sync_engine/domain/entities/table_one.dart';
 
-class TableOneModel extends StandardTableRecord with EquatableMixin {
+class TableOneModel extends StandardTableRecordModel with EquatableMixin {
   final String message;
   const TableOneModel({
     required super.entityId,
@@ -30,7 +31,7 @@ class TableOneModel extends StandardTableRecord with EquatableMixin {
   ];
   factory TableOneModel.fromJson(Map<String, dynamic> json) {
     return TableOneModel(
-      entityId: json['entity_id'],
+      entityId: json['id'],
       centerId: json['center_id'],
       byUser: json['by_user'],
       byDevice: json['by_device'],
@@ -54,18 +55,31 @@ class TableOneModel extends StandardTableRecord with EquatableMixin {
       message: collection.message,
     );
   }
+  factory TableOneModel.fromEntity(TableOne entity) {
+    return TableOneModel(
+      entityId: entity.entityId,
+      centerId: entity.centerId,
+      byUser: entity.byUser,
+      byDevice: entity.byDevice,
+      isDeleted: entity.isDeleted,
+      version: entity.version,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      message: entity.message,
+    );
+  }
 
   @override
   Map<String, dynamic> toJson() {
     return {
-      'entity_id': entityId,
+      'id': entityId,
       'center_id': centerId,
       'by_user': byUser,
       'by_device': byDevice,
       'is_deleted': isDeleted,
       'version': version,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
+      'created_at': createdAt.toUtc().toIso8601String(),
+      'updated_at': updatedAt.toUtc().toIso8601String(),
       'message': message,
     };
   }

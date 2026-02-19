@@ -4,10 +4,10 @@ import 'package:sync_feature/core/isar_service/collections/table_one_collection.
 import 'package:sync_feature/core/isar_service/isar_service.dart'
     show IsarService;
 import 'package:sync_feature/sync_engine/data/data_source/local/local_table_datasource.dart';
-import 'package:sync_feature/sync_engine/data/data_source/models/table_one_model.dart';
-import 'package:sync_feature/sync_engine/domain/entities/standard_table_record.dart';
+import 'package:sync_feature/sync_engine/data/data_source/models/standard_table_record_model.dart';
 
 import '../../../../core/helper.dart';
+import '../models/table_one_model.dart';
 
 class LocalTableOneDatasource implements LocalTableDatasource {
   @override
@@ -36,7 +36,7 @@ class LocalTableOneDatasource implements LocalTableDatasource {
   }
 
   @override
-  DBTable get table => DBTable.table1;
+  DBTable get table => DBTable.table_one;
 
   @override
   Future<void> softDeleteEntities(List<String> ids) async {
@@ -86,13 +86,13 @@ class LocalTableOneDatasource implements LocalTableDatasource {
       });
     } else {
       throw Exception(
-        'there is no record in db for ${model.entityId} at ${DBTable.table1.name} table',
+        'there is no record in db for ${model.entityId} at ${DBTable.table_one.name} table',
       );
     }
   }
 
   @override
-  Future<StandardTableRecord?> getEntity(String entityId) async {
+  Future<StandardTableRecordModel?> getEntity(String entityId) async {
     final record = await IsarService.isar.tableOneCollections
         .filter()
         .entityIdEqualTo(entityId)

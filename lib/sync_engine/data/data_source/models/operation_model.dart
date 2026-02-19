@@ -119,4 +119,17 @@ class OperationModel extends Equatable {
       createdAt: operationCollection.createdAt,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "operation_id": operationId,
+      "table": table.name,
+      "action": action.name,
+      "entity_id": entityId,
+      "version": version,
+      "center_id": centerId,
+      "user_role": userRole.name,
+      "table_record": json,
+    };
+  }
 }

@@ -1,0 +1,52 @@
+import 'package:equatable/equatable.dart';
+import 'package:sync_feature/sync_engine/domain/entities/standard_table_record.dart';
+
+class TableFive extends StandardTableRecord with EquatableMixin {
+  final String message;
+  final String forKeyTableThree;
+  final String forKeyTableFour;
+  const TableFive({
+    required super.entityId,
+    required this.message,
+    required this.forKeyTableFour,
+    required this.forKeyTableThree,
+    required super.centerId,
+    required super.byUser,
+    required super.byDevice,
+    required super.isDeleted,
+    required super.version,
+    required super.createdAt,
+    required super.updatedAt,
+  });
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'id': entityId,
+      'table_three_id': forKeyTableThree,
+      'table_four_id': forKeyTableFour,
+      'center_id': centerId,
+      'by_user': byUser,
+      'by_device': byDevice,
+      'is_deleted': isDeleted,
+      'version': version,
+      'created_at': createdAt.toUtc().toIso8601String(),
+      'updated_at': updatedAt.toUtc().toIso8601String(),
+      'message': message,
+    };
+  }
+
+  @override
+  List<Object> get props => [
+    entityId,
+    forKeyTableFour,
+    forKeyTableThree,
+    centerId,
+    message,
+    byUser,
+    byDevice,
+    isDeleted,
+    version,
+    createdAt,
+    updatedAt,
+  ];
+}

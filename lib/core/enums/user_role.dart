@@ -12,5 +12,5 @@ enum UserRole {
 }
 
 const UserRole currentUserRole = UserRole.admin;
-const String currentUser = 'mahmoud';
+const String currentUser = 'e05f3ee8-2c6f-4ac8-bb2a-f744fdb8886c';
 const String deviceId = 'device1';

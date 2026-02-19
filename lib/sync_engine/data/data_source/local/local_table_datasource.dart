@@ -1,5 +1,5 @@
 import 'package:sync_feature/core/enums/DB_Table.dart';
-import 'package:sync_feature/sync_engine/domain/entities/standard_table_record.dart';
+import 'package:sync_feature/sync_engine/data/data_source/models/standard_table_record_model.dart';
 
 abstract class LocalTableDatasource {
   DBTable get table;
@@ -12,5 +12,5 @@ abstract class LocalTableDatasource {
   });
   Future<void> updateEntity<T>(T model);
   Future<void> insertEntity<T>(T model);
-  Future<StandardTableRecord?> getEntity(String entityId);
+  Future<StandardTableRecordModel?> getEntity(String entityId);
 }

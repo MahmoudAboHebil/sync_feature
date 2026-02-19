@@ -1,4 +1,4 @@
-abstract class StandardTableRecord {
+abstract class StandardTableRecordModel {
   final String entityId;
   final String centerId;
   final String byUser;
@@ -7,7 +7,7 @@ abstract class StandardTableRecord {
   final int version;
   final DateTime createdAt;
   final DateTime updatedAt;
-  const StandardTableRecord({
+  const StandardTableRecordModel({
     required this.entityId,
     required this.centerId,
     required this.byUser,
@@ -17,6 +17,6 @@ abstract class StandardTableRecord {
     required this.createdAt,
     required this.updatedAt,
   });
-
   Map<String, dynamic> toJson();
+  Object toCollection();
 }

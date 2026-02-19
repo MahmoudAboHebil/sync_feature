@@ -7,7 +7,7 @@ import 'package:sync_feature/sync_engine/data/data_source/models/table_four_mode
 
 import '../../../../core/enums/DB_Table.dart';
 import '../../../../core/helper.dart';
-import '../../../domain/entities/standard_table_record.dart';
+import '../models/standard_table_record_model.dart';
 
 class LocalTableFourDatasource implements LocalTableDatasource {
   @override
@@ -34,7 +34,7 @@ class LocalTableFourDatasource implements LocalTableDatasource {
   }) async {
     Set<String> ids = {};
     List<TableFourCollection> collections = [];
-    if (parentTable == DBTable.table2) {
+    if (parentTable == DBTable.table_two) {
       if (test) {
         collections = tableFour.where((coll) {
           final x = parentsIds.contains(coll.forKeyTableTwo);
@@ -64,7 +64,7 @@ class LocalTableFourDatasource implements LocalTableDatasource {
   }
 
   @override
-  DBTable get table => DBTable.table4;
+  DBTable get table => DBTable.table_four;
   @override
   Future<void> softDeleteEntities(List<String> ids) async {
     final uniqueIds = ids.toSet();
@@ -114,13 +114,13 @@ class LocalTableFourDatasource implements LocalTableDatasource {
       });
     } else {
       throw Exception(
-        'there is no record in db for ${model.entityId} at ${DBTable.table4.name} table',
+        'there is no record in db for ${model.entityId} at ${DBTable.table_four.name} table',
       );
     }
   }
 
   @override
-  Future<StandardTableRecord?> getEntity(String entityId) async {
+  Future<StandardTableRecordModel?> getEntity(String entityId) async {
     final record = await IsarService.isar.tableFourCollections
         .filter()
         .entityIdEqualTo(entityId)

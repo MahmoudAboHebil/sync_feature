@@ -1,9 +1,10 @@
 import 'package:equatable/equatable.dart';
-import 'package:sync_feature/sync_engine/domain/entities/standard_table_record.dart';
+import 'package:sync_feature/sync_engine/data/data_source/models/standard_table_record_model.dart';
+import 'package:sync_feature/sync_engine/domain/entities/table_five.dart';
 
 import '../../../../core/isar_service/collections/table_five_collection.dart';
 
-class TableFiveModel extends StandardTableRecord with EquatableMixin {
+class TableFiveModel extends StandardTableRecordModel with EquatableMixin {
   final String message;
   final String forKeyTableThree;
   final String forKeyTableFour;
@@ -38,9 +39,9 @@ class TableFiveModel extends StandardTableRecord with EquatableMixin {
 
   factory TableFiveModel.fromJson(Map<String, dynamic> json) {
     return TableFiveModel(
-      entityId: json['entity_id'],
-      forKeyTableFour: json['forkey_table_four'],
-      forKeyTableThree: json['forkey_table_three'],
+      entityId: json['id'],
+      forKeyTableFour: json['table_four_id'],
+      forKeyTableThree: json['table_three_id'],
       centerId: json['center_id'],
       byUser: json['by_user'],
       byDevice: json['by_device'],
@@ -67,20 +68,35 @@ class TableFiveModel extends StandardTableRecord with EquatableMixin {
       forKeyTableThree: collection.forKeyTableThree,
     );
   }
+  factory TableFiveModel.fromEntity(TableFive entity) {
+    return TableFiveModel(
+      entityId: entity.entityId,
+      centerId: entity.centerId,
+      byUser: entity.byUser,
+      byDevice: entity.byDevice,
+      isDeleted: entity.isDeleted,
+      version: entity.version,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
+      message: entity.message,
+      forKeyTableFour: entity.forKeyTableFour,
+      forKeyTableThree: entity.forKeyTableThree,
+    );
+  }
 
   @override
   Map<String, dynamic> toJson() {
     return {
-      'entity_id': entityId,
-      'forkey_table_three': forKeyTableThree,
-      'forkey_table_four': forKeyTableFour,
+      'id': entityId,
+      'table_three_id': forKeyTableThree,
+      'table_four_id': forKeyTableFour,
       'center_id': centerId,
       'by_user': byUser,
       'by_device': byDevice,
       'is_deleted': isDeleted,
       'version': version,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
+      'created_at': createdAt.toUtc().toIso8601String(),
+      'updated_at': updatedAt.toUtc().toIso8601String(),
       'message': message,
     };
   }
