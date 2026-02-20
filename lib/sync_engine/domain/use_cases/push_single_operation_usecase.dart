@@ -6,18 +6,19 @@ import '../../../core/error/failure.dart';
 import '../../../core/error/netwrok_response.dart';
 import '../../../core/use_cases/use_case.dart';
 
-class PushSingleOperationParams {
+class PushSingleOperationUseCaseParams {
   final Operation operation;
-  const PushSingleOperationParams({required this.operation});
+  const PushSingleOperationUseCaseParams({required this.operation});
 }
 
-class PushSingleOperation
-    implements UseCase<Either<Failure, void>, PushSingleOperationParams> {
+class PushSingleOperationUseCase
+    implements
+        UseCase<Either<Failure, void>, PushSingleOperationUseCaseParams> {
   final SyncRepository _repository;
-  const PushSingleOperation(this._repository);
+  const PushSingleOperationUseCase(this._repository);
   @override
   Future<Either<Failure, NetworkResponse>> call(
-    PushSingleOperationParams params,
+    PushSingleOperationUseCaseParams params,
   ) async {
     return await _repository.pushSingleOperation(params.operation);
   }

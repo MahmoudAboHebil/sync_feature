@@ -6,23 +6,23 @@ import 'package:sync_feature/sync_engine/domain/repository/table_repository.dart
 import '../../../core/error/failure.dart';
 import '../../../core/use_cases/use_case.dart';
 
-class AddEntityLocalParams {
+class AddEntityLocalUseCaseParams {
   final DBTable table;
   final Map<String, dynamic>? jsonEntity;
   final StandardTableRecord? entity;
-  const AddEntityLocalParams({
+  const AddEntityLocalUseCaseParams({
     required this.table,
     required this.jsonEntity,
     required this.entity,
   });
 }
 
-class AddEntityLocal
-    implements UseCase<Either<Failure, void>, AddEntityLocalParams> {
+class AddEntityLocalUseCase
+    implements UseCase<Either<Failure, void>, AddEntityLocalUseCaseParams> {
   final TableRepository _repository;
-  const AddEntityLocal(this._repository);
+  const AddEntityLocalUseCase(this._repository);
   @override
-  Future<Either<Failure, void>> call(AddEntityLocalParams params) async {
+  Future<Either<Failure, void>> call(AddEntityLocalUseCaseParams params) async {
     return await _repository.insertEntityToTable(
       params.table,
       params.jsonEntity,

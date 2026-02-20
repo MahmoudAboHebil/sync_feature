@@ -72,6 +72,38 @@ class TableRepositoryImpl implements TableRepository {
     }
   }
 
+  Map<DBTable, List<String>> _getForginKeysIds(
+    DBTable table,
+    Operation operation,
+  ) {
+    if (table == DBTable.table_one) {
+      return {};
+    } else if (table == DBTable.table_two) {
+      final model = _getTableModel(table, operation.json) as TableTwoModel;
+      return {
+        DBTable.table_one: [model.forkeyTableOne],
+      };
+    } else if (table == DBTable.table_three) {
+      final model = _getTableModel(table, operation.json) as TableThreeModel;
+      return {
+        DBTable.table_two: [model.forKeyTableTwo],
+      };
+    } else if (table == DBTable.table_four) {
+      final model = _getTableModel(table, operation.json) as TableFourModel;
+      return {
+        DBTable.table_two: [model.forKeyTableTwo],
+      };
+    } else if (table == DBTable.table_five) {
+      final model = _getTableModel(table, operation.json) as TableFiveModel;
+      return {
+        DBTable.table_three: [model.forKeyTableThree],
+        DBTable.table_four: [model.forKeyTableFour],
+      };
+    } else {
+      return {};
+    }
+  }
+
   StandardTableRecordModel _getTableModelFromEntity(
     DBTable table,
     StandardTableRecord entity,
@@ -103,7 +135,7 @@ class TableRepositoryImpl implements TableRepository {
         entityId,
         test: test,
       );
-      Map<DBTable, Set<String>> tableEntityRemoveIds = result.getOrThrow();
+      Map<DBTable, List<String>> tableEntityRemoveIds = result.getOrThrow();
       //todo: delete subs  from db && queue
       for (final tab in tableEntityRemoveIds.entries) {
         final table = tab.key;
@@ -186,10 +218,31 @@ class TableRepositoryImpl implements TableRepository {
   @override
   Future<Either<Failure, NetworkResponse>> sendOperationToServer(
     Operation operation,
-    String deviceId, {
-    Map<String, dynamic> recursiveForwardRelationsIds = const {},
-    Map<String, dynamic> recursiveBackwordRelationsIds = const {},
-  }) async {
+    String deviceId,
+  ) async {
+    Map<String, dynamic> recursiveForwardRelationsIds = {};
+
+    Map<String, dynamic> recursiveBackwordRelationsIds = {};
+
+    final forward = await getForwardRecursiveRelationsIds(
+      operation.table,
+      operation.entityId,
+    );
+    final forwardResult = forward.getOrThrow();
+
+    for (final item in forwardResult.entries) {
+      recursiveForwardRelationsIds[item.key.name] = item.value;
+    }
+
+    final backword = _getForginKeysIds(operation.table, operation);
+
+    for (final item in backword.entries) {
+      recursiveBackwordRelationsIds[item.key.name] = item.value;
+    }
+
+    print('Forward :$recursiveForwardRelationsIds');
+    print('backword :$recursiveBackwordRelationsIds');
+
     try {
       final operationModel = OperationModel.fromOperation(operation);
       final payload = {
@@ -199,32 +252,38 @@ class TableRepositoryImpl implements TableRepository {
         "device_id": deviceId,
         "user_id": operationModel.createdBy,
       };
+
       final response = await Supabase.instance.client.functions.invoke(
         'sync-operation',
         body: payload,
       );
       final result = Helper.handleSyncOperationResponse(response.data);
       return Right(result);
+    } on FunctionResponse catch (e) {
+      final result = Helper.handleSyncOperationResponse(e.data);
+      return Right(result);
     } catch (e) {
       return Left(ProcessingFailure(message: e.toString()));
     }
   }
 
+  /*
   @override
-  Future<Either<Failure, Map<DBTable, Set<String>>>> getBackwordRelationsIds(
+  Future<Either<Failure, Map<DBTable, List<String>>>> getBackwordRelationsIds(
     DBTable startTable,
     String entityId, {
     bool test = false,
   }) async {
     try {
-      final Map<DBTable, Set<String>> tableEntityRemoveIds = {};
+      final Map<DBTable, List<String>> tableEntityRemoveIds = {};
+
       final parentsTables =
           tabelRelationsNotNull[startTable]?["backword"] ?? [];
       for (final table in parentsTables) {
         final idsList = await _getTableDataSource(
           table,
         ).getForeignkeyEntitiesIdsBulk(table, [entityId], test: test);
-        tableEntityRemoveIds[table] = idsList.toSet();
+        tableEntityRemoveIds[table] = idsList.toSet().toList();
       }
       return Right(tableEntityRemoveIds);
     } catch (e) {
@@ -232,8 +291,10 @@ class TableRepositoryImpl implements TableRepository {
     }
   }
 
+   */
+
   @override
-  Future<Either<Failure, Map<DBTable, Set<String>>>>
+  Future<Either<Failure, Map<DBTable, List<String>>>>
   getForwardRecursiveRelationsIds(
     DBTable startTable,
     String entityId, {
@@ -278,7 +339,12 @@ class TableRepositoryImpl implements TableRepository {
         }
       }
       tableEntityRemoveIds.remove(startTable);
-      return Right(tableEntityRemoveIds);
+
+      final Map<DBTable, List<String>> result = {};
+      for (final item in tableEntityRemoveIds.entries) {
+        result[item.key] = item.value.toList();
+      }
+      return Right(result);
     } catch (e) {
       return Left(ProcessingFailure(message: e.toString()));
     }

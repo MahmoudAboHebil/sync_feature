@@ -12,12 +12,8 @@ abstract class TableRepository {
     String entityId, {
     bool test = false,
   });
-  Future<Either<Failure, Map<DBTable, Set<String>>>> getBackwordRelationsIds(
-    DBTable table,
-    String entityId, {
-    bool test = false,
-  });
-  Future<Either<Failure, Map<DBTable, Set<String>>>>
+
+  Future<Either<Failure, Map<DBTable, List<String>>>>
   getForwardRecursiveRelationsIds(
     DBTable startTable,
     String entityId, {
@@ -35,10 +31,8 @@ abstract class TableRepository {
   );
   Future<Either<Failure, NetworkResponse>> sendOperationToServer(
     Operation operation,
-    String deviceId, {
-    Map<String, dynamic> recursiveForwardRelationsIds = const {},
-    Map<String, dynamic> recursiveBackwordRelationsIds = const {},
-  });
+    String deviceId,
+  );
   Future<Either<Failure, Map<String, dynamic>?>> getEntityFromTable(
     DBTable table,
     String entityId,
