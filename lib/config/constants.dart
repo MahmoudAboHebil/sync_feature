@@ -1,3 +1,5 @@
+import '../core/enums/user_role.dart';
+
 const projectSupabaseId = "uxrudvwvfgghhzstawlf";
 const projectSupabaseUrl = "https://uxrudvwvfgghhzstawlf.supabase.co";
 const projectSupabaseAnonKey =

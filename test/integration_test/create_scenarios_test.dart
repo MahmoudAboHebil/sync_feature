@@ -77,6 +77,7 @@ void main() {
         );
         final pushParams = PushSingleOperationUseCaseParams(
           operation: operation,
+          deviceId: deviceId,
         );
         final pushUseCase = PushSingleOperationUseCase(syncRepository);
         final pushResult = await pushUseCase.call(pushParams);
@@ -238,7 +239,10 @@ void main() {
 
         for (final operation in queue) {
           final result = await pushSingleOperationUseCase.call(
-            PushSingleOperationUseCaseParams(operation: operation),
+            PushSingleOperationUseCaseParams(
+              operation: operation,
+              deviceId: deviceId,
+            ),
           );
           await result.fold(
             ifLeft: (err) {
@@ -268,7 +272,10 @@ void main() {
 
         for (final operation in queue) {
           final result = await pushSingleOperationUseCase.call(
-            PushSingleOperationUseCaseParams(operation: operation),
+            PushSingleOperationUseCaseParams(
+              operation: operation,
+              deviceId: deviceId,
+            ),
           );
           result.fold(
             ifLeft: (err) {
@@ -329,7 +336,10 @@ void main() {
 
     // push operation to server
     final result = await pushSingleOperationUseCase.call(
-      PushSingleOperationUseCaseParams(operation: operationFive),
+      PushSingleOperationUseCaseParams(
+        operation: operationFive,
+        deviceId: deviceId,
+      ),
     );
     result.fold(
       ifLeft: (err) {

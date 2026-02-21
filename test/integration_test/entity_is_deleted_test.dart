@@ -62,7 +62,10 @@ void main() {
 
     // push operation to server
     final result = await pushSingleOperationUseCase.call(
-      PushSingleOperationUseCaseParams(operation: operationFive),
+      PushSingleOperationUseCaseParams(
+        operation: operationFive,
+        deviceId: deviceId,
+      ),
     );
     result.fold(
       ifLeft: (err) {
