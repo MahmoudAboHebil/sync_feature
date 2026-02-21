@@ -8,7 +8,11 @@ import '../../../core/use_cases/use_case.dart';
 
 class PushSingleOperationUseCaseParams {
   final Operation operation;
-  const PushSingleOperationUseCaseParams({required this.operation});
+  final String deviceId;
+  const PushSingleOperationUseCaseParams({
+    required this.operation,
+    required this.deviceId,
+  });
 }
 
 class PushSingleOperationUseCase
@@ -20,6 +24,9 @@ class PushSingleOperationUseCase
   Future<Either<Failure, NetworkResponse>> call(
     PushSingleOperationUseCaseParams params,
   ) async {
-    return await _repository.pushSingleOperation(params.operation);
+    return await _repository.pushSingleOperation(
+      params.operation,
+      params.deviceId,
+    );
   }
 }

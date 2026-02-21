@@ -1,3 +1,6 @@
+//ToDo: (0) when creating objects with datatime create them as UTC()
+//ToDo: (0) to save them local and remote
+
 //ToDo: (1) create table model
 //ToDo: (2) create local table datasource impl
 //ToDo: (3) create table collection

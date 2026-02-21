@@ -1,11 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:sync_feature/config/constants.dart';
 import 'package:sync_feature/core/enums/DB_Table.dart';
 import 'package:sync_feature/core/enums/operation_action.dart';
-import 'package:sync_feature/core/enums/user_role.dart';
 import 'package:sync_feature/core/helper.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/local_queue_datasource.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/local_table_one_datasource_impl.dart';
+import 'package:sync_feature/sync_engine/data/data_source/local/sync_datasource.dart';
 import 'package:sync_feature/sync_engine/data/repository/queue_repository_impl.dart';
 import 'package:sync_feature/sync_engine/data/repository/sync_repository_impl.dart';
 import 'package:sync_feature/sync_engine/data/repository/table_repository_impl.dart';
@@ -23,11 +24,12 @@ void main() {
   test('1)Create (first Node)', () async {
     final queueDatasource = LocalQueueDatasource();
     final tableDatasource = LocalTableOneDatasource();
+    final syncDatasource = SyncDatasource();
     final tableRepository = TableRepositoryImpl(
       queueDatasource,
       tableDatasource,
     );
-    final syncRepository = SyncRepositoryImpl(tableRepository);
+    final syncRepository = SyncRepositoryImpl(tableRepository, syncDatasource);
     final token = await Helper.login('testone@gmail.com', 'testone@gmail.com');
     final entityId = "4080b569-9715-471d-bf8f-61ae352d2c4a";
     final centerId = "5d242021-432d-41ea-ac04-fba60e368fd3";
@@ -94,11 +96,12 @@ void main() {
     final queueDatasource = LocalQueueDatasource();
     final tableDatasource = LocalTableOneDatasource();
     final queueRepository = QueueRepositoryImpl(queueDatasource);
+    final syncDatasource = SyncDatasource();
     final tableRepository = TableRepositoryImpl(
       queueDatasource,
       tableDatasource,
     );
-    final syncRepository = SyncRepositoryImpl(tableRepository);
+    final syncRepository = SyncRepositoryImpl(tableRepository, syncDatasource);
     final addEntityUseCase = AddEntityLocalUseCase(tableRepository);
     final addOperationUseCase = AddOperationLocalUseCase(queueRepository);
     final getTableQueueUseCase = GetTableQueueUseCase(queueRepository);
@@ -284,11 +287,12 @@ void main() {
     final queueDatasource = LocalQueueDatasource();
     final tableDatasource = LocalTableOneDatasource();
     final queueRepository = QueueRepositoryImpl(queueDatasource);
+    final syncDatasource = SyncDatasource();
     final tableRepository = TableRepositoryImpl(
       queueDatasource,
       tableDatasource,
     );
-    final syncRepository = SyncRepositoryImpl(tableRepository);
+    final syncRepository = SyncRepositoryImpl(tableRepository, syncDatasource);
     final addEntityUseCase = AddEntityLocalUseCase(tableRepository);
     final addOperationUseCase = AddOperationLocalUseCase(queueRepository);
     final getTableQueueUseCase = GetTableQueueUseCase(queueRepository);

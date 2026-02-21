@@ -1,15 +1,16 @@
 import 'package:equatable/equatable.dart';
-import 'package:sync_feature/core/isar_service/collections/table_two_collection.dart';
-import 'package:sync_feature/sync_engine/data/data_source/models/standard_table_record_model.dart';
-import 'package:sync_feature/sync_engine/domain/entities/table_two.dart';
+import 'package:sync_feature/sync_engine/data/models/standard_table_record_model.dart';
 
-class TableTwoModel extends StandardTableRecordModel with EquatableMixin {
+import '../../../../core/isar_service/collections/table_four_collection.dart';
+import '../../domain/entities/table_four.dart';
+
+class TableFourModel extends StandardTableRecordModel with EquatableMixin {
   final String message;
-  final String forkeyTableOne;
-  const TableTwoModel({
+  final String forKeyTableTwo;
+  const TableFourModel({
     required super.entityId,
-    required this.forkeyTableOne,
     required this.message,
+    required this.forKeyTableTwo,
     required super.centerId,
     required super.byUser,
     required super.byDevice,
@@ -22,7 +23,7 @@ class TableTwoModel extends StandardTableRecordModel with EquatableMixin {
   @override
   List<Object> get props => [
     entityId,
-    forkeyTableOne,
+    forKeyTableTwo,
     centerId,
     message,
     byUser,
@@ -32,22 +33,22 @@ class TableTwoModel extends StandardTableRecordModel with EquatableMixin {
     createdAt,
     updatedAt,
   ];
-  factory TableTwoModel.fromJson(Map<String, dynamic> json) {
-    return TableTwoModel(
-      forkeyTableOne: json['table_one_id'],
+  factory TableFourModel.fromJson(Map<String, dynamic> json) {
+    return TableFourModel(
       entityId: json['id'],
+      forKeyTableTwo: json['table_two_id'],
       centerId: json['center_id'],
       byUser: json['by_user'],
       byDevice: json['by_device'],
       isDeleted: json['is_deleted'] as bool,
       version: json['version'] as int,
-      createdAt: DateTime.parse(json['created_at']).toLocal(),
-      updatedAt: DateTime.parse(json['updated_at']).toLocal(),
+      createdAt: DateTime.parse(json['created_at']).toUtc(),
+      updatedAt: DateTime.parse(json['updated_at']).toUtc(),
       message: json['message'],
     );
   }
-  factory TableTwoModel.fromCollection(TableTwoCollection collection) {
-    return TableTwoModel(
+  factory TableFourModel.fromCollection(TableFourCollection collection) {
+    return TableFourModel(
       entityId: collection.entityId,
       centerId: collection.centerId,
       byUser: collection.byUser,
@@ -57,11 +58,11 @@ class TableTwoModel extends StandardTableRecordModel with EquatableMixin {
       createdAt: collection.createdAt,
       updatedAt: collection.updatedAt,
       message: collection.message,
-      forkeyTableOne: collection.forKeyTableOne,
+      forKeyTableTwo: collection.forKeyTableTwo,
     );
   }
-  factory TableTwoModel.fromEntity(TableTwo entity) {
-    return TableTwoModel(
+  factory TableFourModel.fromEntity(TableFour entity) {
+    return TableFourModel(
       entityId: entity.entityId,
       centerId: entity.centerId,
       byUser: entity.byUser,
@@ -71,7 +72,7 @@ class TableTwoModel extends StandardTableRecordModel with EquatableMixin {
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
       message: entity.message,
-      forkeyTableOne: entity.forkeyTableOne,
+      forKeyTableTwo: entity.forKeyTableTwo,
     );
   }
 
@@ -79,23 +80,23 @@ class TableTwoModel extends StandardTableRecordModel with EquatableMixin {
   Map<String, dynamic> toJson() {
     return {
       'id': entityId,
-      'table_one_id': forkeyTableOne,
+      'table_two_id': forKeyTableTwo,
       'center_id': centerId,
       'by_user': byUser,
       'by_device': byDevice,
       'is_deleted': isDeleted,
       'version': version,
-      'created_at': createdAt.toUtc().toIso8601String(),
-      'updated_at': updatedAt.toUtc().toIso8601String(),
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
       'message': message,
     };
   }
 
   @override
-  TableTwoCollection toCollection() {
-    return TableTwoCollection()
+  TableFourCollection toCollection() {
+    return TableFourCollection()
       ..entityId = entityId
-      ..forKeyTableOne = forkeyTableOne
+      ..forKeyTableTwo = forKeyTableTwo
       ..centerId = centerId
       ..byUser = byUser
       ..byDevice = byDevice

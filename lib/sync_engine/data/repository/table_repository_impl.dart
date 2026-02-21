@@ -7,11 +7,6 @@ import 'package:sync_feature/core/error/failure.dart';
 import 'package:sync_feature/core/error/netwrok_response.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/local_queue_datasource.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/local_table_datasource.dart';
-import 'package:sync_feature/sync_engine/data/data_source/models/standard_table_record_model.dart';
-import 'package:sync_feature/sync_engine/data/data_source/models/table_five_model.dart';
-import 'package:sync_feature/sync_engine/data/data_source/models/table_four_model.dart';
-import 'package:sync_feature/sync_engine/data/data_source/models/table_one_model.dart';
-import 'package:sync_feature/sync_engine/data/data_source/models/table_three_model.dart';
 import 'package:sync_feature/sync_engine/domain/entities/table_five.dart';
 import 'package:sync_feature/sync_engine/domain/entities/table_four.dart';
 import 'package:sync_feature/sync_engine/domain/entities/table_one.dart';
@@ -20,6 +15,7 @@ import 'package:sync_feature/sync_engine/domain/entities/table_two.dart';
 import 'package:sync_feature/sync_engine/domain/repository/table_repository.dart';
 
 import '../../../core/helper.dart';
+import '../../../main.dart';
 import '../../domain/entities/operation.dart';
 import '../../domain/entities/standard_table_record.dart';
 import '../data_source/local/local_table_five_datasource_impl.dart';
@@ -27,8 +23,13 @@ import '../data_source/local/local_table_four_datasource_impl.dart';
 import '../data_source/local/local_table_one_datasource_impl.dart';
 import '../data_source/local/local_table_three_datasource_impl.dart';
 import '../data_source/local/local_table_two_datasource_impl.dart';
-import '../data_source/models/operation_model.dart';
-import '../data_source/models/table_two_model.dart';
+import '../models/operation_model.dart';
+import '../models/standard_table_record_model.dart';
+import '../models/table_five_model.dart';
+import '../models/table_four_model.dart';
+import '../models/table_one_model.dart';
+import '../models/table_three_model.dart';
+import '../models/table_two_model.dart';
 
 class TableRepositoryImpl implements TableRepository {
   final LocalQueueDatasource _queueDatasource;
@@ -189,9 +190,19 @@ class TableRepositoryImpl implements TableRepository {
     DBTable table,
     String deviceId,
     DateTime lastTimeSync,
-  ) {
-    // TODO: implement getUpdatedEntities
-    throw UnimplementedError();
+    String centerId,
+  ) async {
+    try {
+      final response = await supabase
+          .from(table.name)
+          .select()
+          .eq('center_id', centerId)
+          .gt('push_time', lastTimeSync)
+          .neq('by_device', deviceId);
+      return Right(response);
+    } catch (e) {
+      return Left(ProcessingFailure(message: e.toString()));
+    }
   }
 
   @override

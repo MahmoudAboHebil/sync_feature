@@ -28,6 +28,7 @@ abstract class TableRepository {
     DBTable table,
     String deviceId,
     DateTime lastTimeSync,
+    String centerId,
   );
   Future<Either<Failure, NetworkResponse>> sendOperationToServer(
     Operation operation,

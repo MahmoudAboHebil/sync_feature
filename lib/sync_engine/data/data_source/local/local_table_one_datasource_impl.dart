@@ -4,10 +4,10 @@ import 'package:sync_feature/core/isar_service/collections/table_one_collection.
 import 'package:sync_feature/core/isar_service/isar_service.dart'
     show IsarService;
 import 'package:sync_feature/sync_engine/data/data_source/local/local_table_datasource.dart';
-import 'package:sync_feature/sync_engine/data/data_source/models/standard_table_record_model.dart';
 
 import '../../../../core/helper.dart';
-import '../models/table_one_model.dart';
+import '../../models/standard_table_record_model.dart';
+import '../../models/table_one_model.dart';
 
 class LocalTableOneDatasource implements LocalTableDatasource {
   @override

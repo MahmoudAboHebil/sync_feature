@@ -3,11 +3,11 @@ import 'package:sync_feature/core/isar_service/collections/table_three_collectio
 import 'package:sync_feature/core/isar_service/isar_service.dart'
     show IsarService;
 import 'package:sync_feature/sync_engine/data/data_source/local/local_table_datasource.dart';
-import 'package:sync_feature/sync_engine/data/data_source/models/table_three_model.dart';
 
 import '../../../../core/enums/DB_Table.dart';
 import '../../../../core/helper.dart';
-import '../models/standard_table_record_model.dart';
+import '../../models/standard_table_record_model.dart';
+import '../../models/table_three_model.dart';
 
 class LocalTableThreeDatasource implements LocalTableDatasource {
   @override

@@ -7,5 +7,9 @@ import '../../../core/error/netwrok_response.dart';
 abstract class SyncRepository {
   Future<Either<Failure, NetworkResponse>> pushSingleOperation(
     Operation operation,
+    String deviceId,
   );
+  Future<Either<Failure, DateTime>> getLastSyncTime();
+  Future<Either<Failure, void>> updateLastTimeSync(DateTime timeAsUTC);
+  Future<Either<Failure, String>> getDeviceId();
 }

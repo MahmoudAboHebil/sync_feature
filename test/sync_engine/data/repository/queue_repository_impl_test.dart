@@ -8,7 +8,7 @@ import 'package:sync_feature/core/enums/operation_action.dart';
 import 'package:sync_feature/core/enums/user_role.dart';
 import 'package:sync_feature/core/isar_service/collections/operation_collection.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/local_queue_datasource.dart';
-import 'package:sync_feature/sync_engine/data/data_source/models/operation_model.dart';
+import 'package:sync_feature/sync_engine/data/models/operation_model.dart';
 import 'package:sync_feature/sync_engine/data/repository/queue_repository_impl.dart';
 import 'package:sync_feature/sync_engine/domain/entities/operation.dart';
 

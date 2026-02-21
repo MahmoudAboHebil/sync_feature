@@ -3,9 +3,9 @@ import 'package:sync_feature/core/enums/DB_Table.dart';
 import 'package:sync_feature/core/enums/operation_action.dart';
 import 'package:sync_feature/core/isar_service/collections/operation_collection.dart';
 import 'package:sync_feature/core/isar_service/isar_service.dart';
-import 'package:sync_feature/sync_engine/data/data_source/models/operation_model.dart';
 
 import '../../../../core/helper.dart';
+import '../../models/operation_model.dart';
 
 class LocalQueueDatasource {
   Future<void> insertToQueue(OperationModel operation) async {

@@ -1,13 +1,17 @@
 import 'package:equatable/equatable.dart';
-import 'package:sync_feature/core/isar_service/collections/table_one_collection.dart';
-import 'package:sync_feature/sync_engine/data/data_source/models/standard_table_record_model.dart';
-import 'package:sync_feature/sync_engine/domain/entities/table_one.dart';
+import 'package:sync_feature/sync_engine/data/models/standard_table_record_model.dart';
+import 'package:sync_feature/sync_engine/domain/entities/table_three.dart';
 
-class TableOneModel extends StandardTableRecordModel with EquatableMixin {
+import '../../../../core/isar_service/collections/table_three_collection.dart';
+
+class TableThreeModel extends StandardTableRecordModel with EquatableMixin {
   final String message;
-  const TableOneModel({
+  final String forKeyTableTwo;
+
+  const TableThreeModel({
     required super.entityId,
     required this.message,
+    required this.forKeyTableTwo,
     required super.centerId,
     required super.byUser,
     required super.byDevice,
@@ -21,6 +25,7 @@ class TableOneModel extends StandardTableRecordModel with EquatableMixin {
   List<Object> get props => [
     entityId,
     centerId,
+    forKeyTableTwo,
     message,
     byUser,
     byDevice,
@@ -29,21 +34,24 @@ class TableOneModel extends StandardTableRecordModel with EquatableMixin {
     createdAt,
     updatedAt,
   ];
-  factory TableOneModel.fromJson(Map<String, dynamic> json) {
-    return TableOneModel(
+  factory TableThreeModel.fromJson(Map<String, dynamic> json) {
+    return TableThreeModel(
       entityId: json['id'],
+      forKeyTableTwo: json['table_two_id'],
       centerId: json['center_id'],
       byUser: json['by_user'],
       byDevice: json['by_device'],
       isDeleted: json['is_deleted'] as bool,
       version: json['version'] as int,
-      createdAt: DateTime.parse(json['created_at']).toLocal(),
-      updatedAt: DateTime.parse(json['updated_at']).toLocal(),
+
+      createdAt: DateTime.parse(json['created_at']).toUtc(),
+      updatedAt: DateTime.parse(json['updated_at']).toUtc(),
       message: json['message'],
     );
   }
-  factory TableOneModel.fromCollection(TableOneCollection collection) {
-    return TableOneModel(
+
+  factory TableThreeModel.fromCollection(TableThreeCollection collection) {
+    return TableThreeModel(
       entityId: collection.entityId,
       centerId: collection.centerId,
       byUser: collection.byUser,
@@ -53,10 +61,11 @@ class TableOneModel extends StandardTableRecordModel with EquatableMixin {
       createdAt: collection.createdAt,
       updatedAt: collection.updatedAt,
       message: collection.message,
+      forKeyTableTwo: collection.forKeyTableTwo,
     );
   }
-  factory TableOneModel.fromEntity(TableOne entity) {
-    return TableOneModel(
+  factory TableThreeModel.fromEntity(TableThree entity) {
+    return TableThreeModel(
       entityId: entity.entityId,
       centerId: entity.centerId,
       byUser: entity.byUser,
@@ -66,29 +75,31 @@ class TableOneModel extends StandardTableRecordModel with EquatableMixin {
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
       message: entity.message,
+      forKeyTableTwo: entity.forKeyTableTwo,
     );
   }
-
   @override
   Map<String, dynamic> toJson() {
     return {
       'id': entityId,
+      'table_two_id': forKeyTableTwo,
       'center_id': centerId,
       'by_user': byUser,
       'by_device': byDevice,
       'is_deleted': isDeleted,
       'version': version,
-      'created_at': createdAt.toUtc().toIso8601String(),
-      'updated_at': updatedAt.toUtc().toIso8601String(),
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
       'message': message,
     };
   }
 
   @override
-  TableOneCollection toCollection() {
-    return TableOneCollection()
+  TableThreeCollection toCollection() {
+    return TableThreeCollection()
       ..entityId = entityId
       ..centerId = centerId
+      ..forKeyTableTwo = forKeyTableTwo
       ..byUser = byUser
       ..byDevice = byDevice
       ..isDeleted = isDeleted

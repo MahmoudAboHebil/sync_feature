@@ -5,9 +5,9 @@ import 'package:sync_feature/core/isar_service/collections/table_two_collection.
 import 'package:sync_feature/core/isar_service/isar_service.dart'
     show IsarService;
 import 'package:sync_feature/sync_engine/data/data_source/local/local_table_datasource.dart';
-import 'package:sync_feature/sync_engine/data/data_source/models/table_two_model.dart';
 
-import '../models/standard_table_record_model.dart';
+import '../../models/standard_table_record_model.dart';
+import '../../models/table_two_model.dart';
 
 class LocalTableTwoDatasource implements LocalTableDatasource {
   @override

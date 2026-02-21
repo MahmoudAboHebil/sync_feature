@@ -3,9 +3,10 @@ import 'package:sync_feature/core/enums/DB_Table.dart';
 import 'package:sync_feature/core/enums/operation_action.dart';
 import 'package:sync_feature/core/error/failure.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/local_queue_datasource.dart';
-import 'package:sync_feature/sync_engine/data/data_source/models/operation_model.dart';
 import 'package:sync_feature/sync_engine/domain/entities/operation.dart';
 import 'package:sync_feature/sync_engine/domain/repository/queue_repository.dart';
+
+import '../models/operation_model.dart';
 
 class QueueRepositoryImpl extends QueueRepository {
   final LocalQueueDatasource _localQueueDatasource;

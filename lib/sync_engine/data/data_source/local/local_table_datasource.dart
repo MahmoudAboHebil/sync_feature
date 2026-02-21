@@ -1,5 +1,6 @@
 import 'package:sync_feature/core/enums/DB_Table.dart';
-import 'package:sync_feature/sync_engine/data/data_source/models/standard_table_record_model.dart';
+
+import '../../models/standard_table_record_model.dart';
 
 abstract class LocalTableDatasource {
   DBTable get table;

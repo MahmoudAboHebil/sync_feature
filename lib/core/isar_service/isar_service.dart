@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sync_feature/core/isar_service/collections/configration_collection.dart';
 import 'package:sync_feature/core/isar_service/collections/operation_collection.dart';
 import 'package:sync_feature/core/isar_service/collections/table_one_collection.dart';
 
@@ -19,6 +20,7 @@ class IsarService {
     _instance = await Isar.open(
       [
         OperationCollectionSchema,
+        ConfigrationCollectionSchema,
         TableOneCollectionSchema,
         TableTwoCollectionSchema,
         TableThreeCollectionSchema,

@@ -1,17 +1,18 @@
 import 'package:equatable/equatable.dart';
-import 'package:sync_feature/sync_engine/data/data_source/models/standard_table_record_model.dart';
-import 'package:sync_feature/sync_engine/domain/entities/table_three.dart';
+import 'package:sync_feature/sync_engine/data/models/standard_table_record_model.dart';
+import 'package:sync_feature/sync_engine/domain/entities/table_five.dart';
 
-import '../../../../core/isar_service/collections/table_three_collection.dart';
+import '../../../../core/isar_service/collections/table_five_collection.dart';
 
-class TableThreeModel extends StandardTableRecordModel with EquatableMixin {
+class TableFiveModel extends StandardTableRecordModel with EquatableMixin {
   final String message;
-  final String forKeyTableTwo;
-
-  const TableThreeModel({
+  final String forKeyTableThree;
+  final String forKeyTableFour;
+  const TableFiveModel({
     required super.entityId,
     required this.message,
-    required this.forKeyTableTwo,
+    required this.forKeyTableFour,
+    required this.forKeyTableThree,
     required super.centerId,
     required super.byUser,
     required super.byDevice,
@@ -24,8 +25,9 @@ class TableThreeModel extends StandardTableRecordModel with EquatableMixin {
   @override
   List<Object> get props => [
     entityId,
+    forKeyTableFour,
+    forKeyTableThree,
     centerId,
-    forKeyTableTwo,
     message,
     byUser,
     byDevice,
@@ -34,23 +36,26 @@ class TableThreeModel extends StandardTableRecordModel with EquatableMixin {
     createdAt,
     updatedAt,
   ];
-  factory TableThreeModel.fromJson(Map<String, dynamic> json) {
-    return TableThreeModel(
+
+  factory TableFiveModel.fromJson(Map<String, dynamic> json) {
+    return TableFiveModel(
       entityId: json['id'],
-      forKeyTableTwo: json['table_two_id'],
+      forKeyTableFour: json['table_four_id'],
+      forKeyTableThree: json['table_three_id'],
       centerId: json['center_id'],
       byUser: json['by_user'],
       byDevice: json['by_device'],
       isDeleted: json['is_deleted'] as bool,
       version: json['version'] as int,
-      createdAt: DateTime.parse(json['created_at']).toLocal(),
-      updatedAt: DateTime.parse(json['updated_at']).toLocal(),
+
+      createdAt: DateTime.parse(json['created_at']).toUtc(),
+      updatedAt: DateTime.parse(json['updated_at']).toUtc(),
       message: json['message'],
     );
   }
 
-  factory TableThreeModel.fromCollection(TableThreeCollection collection) {
-    return TableThreeModel(
+  factory TableFiveModel.fromCollection(TableFiveCollection collection) {
+    return TableFiveModel(
       entityId: collection.entityId,
       centerId: collection.centerId,
       byUser: collection.byUser,
@@ -60,11 +65,12 @@ class TableThreeModel extends StandardTableRecordModel with EquatableMixin {
       createdAt: collection.createdAt,
       updatedAt: collection.updatedAt,
       message: collection.message,
-      forKeyTableTwo: collection.forKeyTableTwo,
+      forKeyTableFour: collection.forKeyTableFour,
+      forKeyTableThree: collection.forKeyTableThree,
     );
   }
-  factory TableThreeModel.fromEntity(TableThree entity) {
-    return TableThreeModel(
+  factory TableFiveModel.fromEntity(TableFive entity) {
+    return TableFiveModel(
       entityId: entity.entityId,
       centerId: entity.centerId,
       byUser: entity.byUser,
@@ -74,31 +80,35 @@ class TableThreeModel extends StandardTableRecordModel with EquatableMixin {
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
       message: entity.message,
-      forKeyTableTwo: entity.forKeyTableTwo,
+      forKeyTableFour: entity.forKeyTableFour,
+      forKeyTableThree: entity.forKeyTableThree,
     );
   }
+
   @override
   Map<String, dynamic> toJson() {
     return {
       'id': entityId,
-      'table_two_id': forKeyTableTwo,
+      'table_three_id': forKeyTableThree,
+      'table_four_id': forKeyTableFour,
       'center_id': centerId,
       'by_user': byUser,
       'by_device': byDevice,
       'is_deleted': isDeleted,
       'version': version,
-      'created_at': createdAt.toUtc().toIso8601String(),
-      'updated_at': updatedAt.toUtc().toIso8601String(),
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
       'message': message,
     };
   }
 
   @override
-  TableThreeCollection toCollection() {
-    return TableThreeCollection()
+  TableFiveCollection toCollection() {
+    return TableFiveCollection()
       ..entityId = entityId
+      ..forKeyTableThree = forKeyTableThree
+      ..forKeyTableFour = forKeyTableFour
       ..centerId = centerId
-      ..forKeyTableTwo = forKeyTableTwo
       ..byUser = byUser
       ..byDevice = byDevice
       ..isDeleted = isDeleted
