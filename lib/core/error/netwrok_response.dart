@@ -54,10 +54,10 @@ class EntityIsDeleted extends NetworkFailure {
 }
 
 class VersionConflict extends NetworkFailure {
-  const VersionConflict({required super.details});
+  const VersionConflict({required super.data});
   @override
   String toString() {
-    return '''NetworkFailure (VersionConflict) details=> \n$details''';
+    return '''NetworkFailure (VersionConflict)  data=>\n $data''';
   }
 }
 

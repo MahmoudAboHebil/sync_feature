@@ -259,8 +259,8 @@ class TableRepositoryImpl implements TableRepository {
       );
       final result = Helper.handleSyncOperationResponse(response.data);
       return Right(result);
-    } on FunctionResponse catch (e) {
-      final result = Helper.handleSyncOperationResponse(e.data);
+    } on FunctionException catch (e) {
+      final result = Helper.handleSyncOperationResponse(e.details);
       return Right(result);
     } catch (e) {
       return Left(ProcessingFailure(message: e.toString()));

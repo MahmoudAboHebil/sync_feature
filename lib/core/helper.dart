@@ -42,10 +42,14 @@ class Helper {
         return ParentIsDeleted(json['parent_ids'] as Map<String, dynamic>);
       case 'entity_not_found':
         return EntityIsNotFound(data: json);
+      case 'Operation already processed':
+        return OperationAlreadyProcessed();
       case 'entity_is_deleted':
         return EntityIsDeleted(data: json);
       case 'version_conflict':
-        return VersionConflict(details: json['message']);
+        return VersionConflict(
+          data: json['server_record'] as Map<String, dynamic>,
+        );
       case 'internal_server_error':
         return InternalServerError(details: json['error']);
       case null: // success case

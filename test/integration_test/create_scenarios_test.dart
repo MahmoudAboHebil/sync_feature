@@ -280,4 +280,62 @@ void main() {
       },
     );
   });
+  test('4)Create 5 ( 3 is deleted at server )', () async {
+    final queueDatasource = LocalQueueDatasource();
+    final tableDatasource = LocalTableOneDatasource();
+    final queueRepository = QueueRepositoryImpl(queueDatasource);
+    final tableRepository = TableRepositoryImpl(
+      queueDatasource,
+      tableDatasource,
+    );
+    final syncRepository = SyncRepositoryImpl(tableRepository);
+    final addEntityUseCase = AddEntityLocalUseCase(tableRepository);
+    final addOperationUseCase = AddOperationLocalUseCase(queueRepository);
+    final getTableQueueUseCase = GetTableQueueUseCase(queueRepository);
+    final pushSingleOperationUseCase = PushSingleOperationUseCase(
+      syncRepository,
+    );
+
+    final entityFive = TableFive(
+      forKeyTableFour: "a5053a65-26f6-4c7f-8887-b6b6fd88a595",
+      forKeyTableThree: "8142af86-79a1-44ba-89a5-05928e14a173",
+      entityId: "513a4e22-ac98-4634-bdc2-1dc65ff774e5",
+      message: 'hellow from table five ent=2',
+      centerId: "5d242021-432d-41ea-ac04-fba60e368fd3",
+      byUser: currentUser,
+      byDevice: deviceId,
+      isDeleted: false,
+      version: 1,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+
+    final operationFive = Operation(
+      id: "3e84f13c-f9eb-4f7f-93c9-2451473a8a5f",
+      entityId: "513a4e22-ac98-4634-bdc2-1dc65ff774e5",
+      centerId: "5d242021-432d-41ea-ac04-fba60e368fd3",
+      action: OperationAction.create,
+      table: DBTable.table_five,
+      json: entityFive.toJson(),
+      version: 1,
+      userRole: currentUserRole,
+      createdBy: currentUser,
+      createdAt: DateTime.now(),
+    );
+
+    // push operation to server
+    final result = await pushSingleOperationUseCase.call(
+      PushSingleOperationUseCaseParams(operation: operationFive),
+    );
+    result.fold(
+      ifLeft: (err) {
+        print('Error : pushing operation five to server');
+        print(err);
+      },
+      ifRight: (e) {
+        print('Success : pushing operation five to server');
+        print(e);
+      },
+    );
+  });
 }
