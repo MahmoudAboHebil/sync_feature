@@ -52,7 +52,9 @@ class OperationModel extends Equatable {
     late final Map<String, dynamic> jsonWithoutDataTime = {};
     for (final v in json.entries) {
       if (v.value is DateTime) {
-        jsonWithoutDataTime[v.key] = (v.value as DateTime).toIso8601String();
+        jsonWithoutDataTime[v.key] = (v.value as DateTime)
+            .toUtc()
+            .toIso8601String();
       } else {
         jsonWithoutDataTime[v.key] = v.value;
       }
@@ -81,7 +83,7 @@ class OperationModel extends Equatable {
       version: version,
       userRole: userRole,
       createdBy: createdBy,
-      createdAt: createdAt,
+      createdAt: createdAt.toUtc(),
     );
   }
 
@@ -116,7 +118,7 @@ class OperationModel extends Equatable {
       version: operationCollection.version,
       userRole: UserRole.getUserRoleFromString(operationCollection.userRole),
       createdBy: operationCollection.createdBy,
-      createdAt: operationCollection.createdAt,
+      createdAt: operationCollection.createdAt.toUtc(),
     );
   }
 

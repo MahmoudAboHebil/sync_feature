@@ -22,7 +22,7 @@ class SyncDatasource {
       });
       return datatime;
     }
-    return collection.lastSyncTime;
+    return collection.lastSyncTime.toUtc();
   }
 
   Future<void> updateLastTimeSync(DateTime timeAsUTC) async {

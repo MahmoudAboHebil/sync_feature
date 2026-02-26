@@ -197,7 +197,7 @@ class TableRepositoryImpl implements TableRepository {
           .from(table.name)
           .select()
           .eq('center_id', centerId)
-          .gt('push_time', lastTimeSync)
+          .gt('push_time', lastTimeSync.toUtc().toIso8601String())
           .neq('by_device', deviceId);
       return Right(response);
     } catch (e) {

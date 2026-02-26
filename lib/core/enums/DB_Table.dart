@@ -1,5 +1,7 @@
 //ToDo: (0) when creating objects with datatime create them as UTC()
 //ToDo: (0) to save them local and remote
+//ToDo: (0) isar does not care about utc or local when putting data,but
+//ToDo: (0) so when getting data from it must be UTC
 
 //ToDo: (1) create table model
 //ToDo: (2) create local table datasource impl

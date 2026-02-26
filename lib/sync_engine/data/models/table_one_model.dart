@@ -50,8 +50,8 @@ class TableOneModel extends StandardTableRecordModel with EquatableMixin {
       byDevice: collection.byDevice,
       isDeleted: collection.isDeleted,
       version: collection.version,
-      createdAt: collection.createdAt,
-      updatedAt: collection.updatedAt,
+      createdAt: collection.createdAt.toUtc(),
+      updatedAt: collection.updatedAt.toUtc(),
       message: collection.message,
     );
   }
@@ -63,8 +63,8 @@ class TableOneModel extends StandardTableRecordModel with EquatableMixin {
       byDevice: entity.byDevice,
       isDeleted: entity.isDeleted,
       version: entity.version,
-      createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
+      createdAt: entity.createdAt.toUtc(),
+      updatedAt: entity.updatedAt.toUtc(),
       message: entity.message,
     );
   }
@@ -78,8 +78,8 @@ class TableOneModel extends StandardTableRecordModel with EquatableMixin {
       'by_device': byDevice,
       'is_deleted': isDeleted,
       'version': version,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
+      'created_at': createdAt.toUtc().toIso8601String(),
+      'updated_at': updatedAt.toUtc().toIso8601String(),
       'message': message,
     };
   }
@@ -93,8 +93,8 @@ class TableOneModel extends StandardTableRecordModel with EquatableMixin {
       ..byDevice = byDevice
       ..isDeleted = isDeleted
       ..version = version
-      ..createdAt = createdAt
-      ..updatedAt = updatedAt
+      ..createdAt = createdAt.toUtc()
+      ..updatedAt = updatedAt.toUtc()
       ..message = message;
   }
 }
