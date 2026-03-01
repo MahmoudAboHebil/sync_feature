@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:sync_feature/core/enums/DB_Table.dart';
 import 'package:sync_feature/core/enums/operation_action.dart';
+import 'package:sync_feature/core/enums/operation_status.dart';
 import 'package:sync_feature/core/enums/user_role.dart';
 
 class Operation extends Equatable {
@@ -14,6 +15,10 @@ class Operation extends Equatable {
   final UserRole userRole;
   final String createdBy;
   final DateTime createdAt;
+  final int retryCount;
+  final DateTime lastAttemptAt;
+  final DateTime nextRetryAt;
+  final OperationState status;
 
   const Operation({
     required this.id,
@@ -26,6 +31,10 @@ class Operation extends Equatable {
     required this.userRole,
     required this.createdBy,
     required this.createdAt,
+    required this.retryCount,
+    required this.lastAttemptAt,
+    required this.nextRetryAt,
+    required this.status,
   });
   @override
   List<Object> get props => [
@@ -39,5 +48,9 @@ class Operation extends Equatable {
     userRole,
     createdBy,
     createdAt,
+    retryCount,
+    lastAttemptAt,
+    nextRetryAt,
+    status,
   ];
 }

@@ -5,6 +5,7 @@ import 'package:sync_feature/core/enums/DB_Table.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/local_queue_datasource.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/local_table_one_datasource_impl.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/sync_datasource.dart';
+import 'package:sync_feature/sync_engine/data/repository/queue_repository_impl.dart';
 import 'package:sync_feature/sync_engine/data/repository/sync_repository_impl.dart';
 import 'package:sync_feature/sync_engine/data/repository/table_repository_impl.dart';
 import 'package:sync_feature/sync_engine/domain/use_cases/get_server_updated_records_usecase.dart';
@@ -12,6 +13,7 @@ import 'package:sync_feature/sync_engine/domain/use_cases/get_server_updated_rec
 void main() {
   test('1) first-app-pull', () async {
     final queueDatasource = LocalQueueDatasource();
+
     final tableDatasource = LocalTableOneDatasource();
 
     final syncDatasource = SyncDatasource();
@@ -19,7 +21,13 @@ void main() {
       queueDatasource,
       tableDatasource,
     );
-    final syncRepository = SyncRepositoryImpl(tableRepository, syncDatasource);
+    final queueRepo = QueueRepositoryImpl(queueDatasource);
+
+    final syncRepository = SyncRepositoryImpl(
+      tableRepository,
+      syncDatasource,
+      queueRepo,
+    );
     final getUpdatedUseCase = GetServerUpdatedRecordsUseCase(tableRepository);
     final deviceId = await syncRepository.getDeviceId();
     print('DEVICE ID:=> ${deviceId.getOrThrow()}');
@@ -55,7 +63,14 @@ void main() {
       queueDatasource,
       tableDatasource,
     );
-    final syncRepository = SyncRepositoryImpl(tableRepository, syncDatasource);
+    final queueRepo = QueueRepositoryImpl(queueDatasource);
+
+    final syncRepository = SyncRepositoryImpl(
+      tableRepository,
+      syncDatasource,
+      queueRepo,
+    );
+
     final getUpdatedUseCase = GetServerUpdatedRecordsUseCase(tableRepository);
     final deviceId = await syncRepository.getDeviceId();
     print('DEVICE ID:=> ${deviceId.getOrThrow()}');

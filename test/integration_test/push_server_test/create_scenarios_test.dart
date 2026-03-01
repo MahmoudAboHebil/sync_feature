@@ -3,6 +3,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:sync_feature/config/constants.dart';
 import 'package:sync_feature/core/enums/DB_Table.dart';
 import 'package:sync_feature/core/enums/operation_action.dart';
+import 'package:sync_feature/core/enums/operation_status.dart';
 import 'package:sync_feature/core/helper.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/local_queue_datasource.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/local_table_one_datasource_impl.dart';
@@ -16,7 +17,7 @@ import 'package:sync_feature/sync_engine/domain/entities/table_three.dart';
 import 'package:sync_feature/sync_engine/domain/use_cases/add_entity_local_usecase.dart';
 import 'package:sync_feature/sync_engine/domain/use_cases/add_operation_local_usecase.dart';
 import 'package:sync_feature/sync_engine/domain/use_cases/get_table_queue_usecase.dart';
-import 'package:sync_feature/sync_engine/domain/use_cases/push_single_operation_usecase.dart';
+import 'package:sync_feature/sync_engine/domain/use_cases/send_operation_to_server_usecase.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +30,14 @@ void main() {
       queueDatasource,
       tableDatasource,
     );
-    final syncRepository = SyncRepositoryImpl(tableRepository, syncDatasource);
+    final queueRepo = QueueRepositoryImpl(queueDatasource);
+
+    final syncRepository = SyncRepositoryImpl(
+      tableRepository,
+      syncDatasource,
+      queueRepo,
+    );
+
     final token = await Helper.login('testone@gmail.com', 'testone@gmail.com');
     final entityId = "4080b569-9715-471d-bf8f-61ae352d2c4a";
     final centerId = "5d242021-432d-41ea-ac04-fba60e368fd3";
@@ -74,12 +82,16 @@ void main() {
           userRole: currentUserRole,
           createdBy: currentUser,
           createdAt: DateTime.now(),
+          nextRetryAt: DateTime.now(),
+          lastAttemptAt: DateTime.now(),
+          retryCount: 0,
+          status: OperationState.pending,
         );
-        final pushParams = PushSingleOperationUseCaseParams(
+        final pushParams = SendOperationToServerUseCaseParams(
           operation: operation,
           deviceId: deviceId,
         );
-        final pushUseCase = PushSingleOperationUseCase(syncRepository);
+        final pushUseCase = SendOperationToServerUseCase(syncRepository);
         final pushResult = await pushUseCase.call(pushParams);
         pushResult.fold(
           ifLeft: (err) {
@@ -102,11 +114,17 @@ void main() {
       queueDatasource,
       tableDatasource,
     );
-    final syncRepository = SyncRepositoryImpl(tableRepository, syncDatasource);
+    final queueRepo = QueueRepositoryImpl(queueDatasource);
+
+    final syncRepository = SyncRepositoryImpl(
+      tableRepository,
+      syncDatasource,
+      queueRepo,
+    );
     final addEntityUseCase = AddEntityLocalUseCase(tableRepository);
     final addOperationUseCase = AddOperationLocalUseCase(queueRepository);
     final getTableQueueUseCase = GetTableQueueUseCase(queueRepository);
-    final pushSingleOperationUseCase = PushSingleOperationUseCase(
+    final pushSingleOperationUseCase = SendOperationToServerUseCase(
       syncRepository,
     );
 
@@ -133,6 +151,10 @@ void main() {
       userRole: currentUserRole,
       createdBy: currentUser,
       createdAt: DateTime.now(),
+      nextRetryAt: DateTime.now(),
+      lastAttemptAt: DateTime.now(),
+      retryCount: 0,
+      status: OperationState.pending,
     );
 
     final entityFive = TableFive(
@@ -160,6 +182,10 @@ void main() {
       userRole: currentUserRole,
       createdBy: currentUser,
       createdAt: DateTime.now(),
+      nextRetryAt: DateTime.now(),
+      lastAttemptAt: DateTime.now(),
+      retryCount: 0,
+      status: OperationState.pending,
     );
 
     // adding entities to local data base
@@ -239,7 +265,7 @@ void main() {
 
         for (final operation in queue) {
           final result = await pushSingleOperationUseCase.call(
-            PushSingleOperationUseCaseParams(
+            SendOperationToServerUseCaseParams(
               operation: operation,
               deviceId: deviceId,
             ),
@@ -272,7 +298,7 @@ void main() {
 
         for (final operation in queue) {
           final result = await pushSingleOperationUseCase.call(
-            PushSingleOperationUseCaseParams(
+            SendOperationToServerUseCaseParams(
               operation: operation,
               deviceId: deviceId,
             ),
@@ -299,11 +325,17 @@ void main() {
       queueDatasource,
       tableDatasource,
     );
-    final syncRepository = SyncRepositoryImpl(tableRepository, syncDatasource);
+    final queueRepo = QueueRepositoryImpl(queueDatasource);
+
+    final syncRepository = SyncRepositoryImpl(
+      tableRepository,
+      syncDatasource,
+      queueRepo,
+    );
     final addEntityUseCase = AddEntityLocalUseCase(tableRepository);
     final addOperationUseCase = AddOperationLocalUseCase(queueRepository);
     final getTableQueueUseCase = GetTableQueueUseCase(queueRepository);
-    final pushSingleOperationUseCase = PushSingleOperationUseCase(
+    final pushSingleOperationUseCase = SendOperationToServerUseCase(
       syncRepository,
     );
 
@@ -332,11 +364,15 @@ void main() {
       userRole: currentUserRole,
       createdBy: currentUser,
       createdAt: DateTime.now(),
+      nextRetryAt: DateTime.now(),
+      lastAttemptAt: DateTime.now(),
+      retryCount: 0,
+      status: OperationState.pending,
     );
 
     // push operation to server
     final result = await pushSingleOperationUseCase.call(
-      PushSingleOperationUseCaseParams(
+      SendOperationToServerUseCaseParams(
         operation: operationFive,
         deviceId: deviceId,
       ),

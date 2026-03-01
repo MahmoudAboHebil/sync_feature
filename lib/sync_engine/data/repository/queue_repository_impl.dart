@@ -1,6 +1,7 @@
 import 'package:dart_either/src/dart_either.dart';
 import 'package:sync_feature/core/enums/DB_Table.dart';
 import 'package:sync_feature/core/enums/operation_action.dart';
+import 'package:sync_feature/core/enums/operation_status.dart';
 import 'package:sync_feature/core/error/failure.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/local_queue_datasource.dart';
 import 'package:sync_feature/sync_engine/domain/entities/operation.dart';
@@ -129,6 +130,33 @@ class QueueRepositoryImpl extends QueueRepository {
       return Left(
         ProcessingFailure(
           message: 'Failed To delete operation from Queue :${e.toString()}',
+        ),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> updateOperation({
+    required String operationId,
+    OperationState? state,
+    int? retryCount,
+    DateTime? lastAttemptAt,
+    DateTime? nextRetryAt,
+  }) async {
+    try {
+      await _localQueueDatasource.updateOperation(
+        operationId: operationId,
+        retryCount: retryCount,
+        nextRetryAt: nextRetryAt,
+        lastAttemptAt: lastAttemptAt,
+        state: state,
+      );
+      return Right(null);
+    } catch (e) {
+      return Left(
+        ProcessingFailure(
+          message:
+              'Failed To update the state  operation from Queue :${e.toString()}',
         ),
       );
     }

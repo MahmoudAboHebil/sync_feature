@@ -7,6 +7,8 @@ import 'package:sync_feature/core/enums/user_role.dart';
 import 'package:sync_feature/core/isar_service/collections/operation_collection.dart';
 import 'package:sync_feature/sync_engine/domain/entities/operation.dart';
 
+import '../../../core/enums/operation_status.dart';
+
 class OperationModel extends Equatable {
   final int? id;
   final String centerId;
@@ -19,6 +21,10 @@ class OperationModel extends Equatable {
   final UserRole userRole;
   final String createdBy;
   final DateTime createdAt;
+  final int retryCount;
+  final DateTime lastAttemptAt;
+  final DateTime nextRetryAt;
+  final OperationState status;
 
   const OperationModel({
     this.id,
@@ -32,6 +38,10 @@ class OperationModel extends Equatable {
     required this.userRole,
     required this.createdBy,
     required this.createdAt,
+    required this.retryCount,
+    required this.lastAttemptAt,
+    required this.nextRetryAt,
+    required this.status,
   });
   @override
   List<Object?> get props => [
@@ -46,6 +56,10 @@ class OperationModel extends Equatable {
     userRole,
     createdBy,
     createdAt,
+    retryCount,
+    lastAttemptAt,
+    nextRetryAt,
+    status,
   ];
 
   OperationCollection toCollection() {
@@ -69,7 +83,11 @@ class OperationModel extends Equatable {
       ..version = version
       ..userRole = userRole.name
       ..createdBy = createdBy
-      ..createdAt = createdAt;
+      ..createdAt = createdAt
+      ..retryCount = retryCount
+      ..lastAttemptAt = lastAttemptAt
+      ..nextRetryAt = nextRetryAt
+      ..status = status.name;
   }
 
   Operation toOperation() {
@@ -83,7 +101,11 @@ class OperationModel extends Equatable {
       version: version,
       userRole: userRole,
       createdBy: createdBy,
-      createdAt: createdAt.toUtc(),
+      createdAt: createdAt,
+      lastAttemptAt: lastAttemptAt,
+      nextRetryAt: nextRetryAt,
+      status: status,
+      retryCount: retryCount,
     );
   }
 
@@ -99,6 +121,10 @@ class OperationModel extends Equatable {
       userRole: operation.userRole,
       createdBy: operation.createdBy,
       createdAt: operation.createdAt,
+      lastAttemptAt: operation.lastAttemptAt,
+      retryCount: operation.retryCount,
+      nextRetryAt: operation.nextRetryAt,
+      status: operation.status,
     );
   }
 
@@ -118,7 +144,13 @@ class OperationModel extends Equatable {
       version: operationCollection.version,
       userRole: UserRole.getUserRoleFromString(operationCollection.userRole),
       createdBy: operationCollection.createdBy,
-      createdAt: operationCollection.createdAt.toUtc(),
+      createdAt: operationCollection.createdAt,
+      nextRetryAt: operationCollection.nextRetryAt,
+      lastAttemptAt: operationCollection.lastAttemptAt,
+      retryCount: operationCollection.retryCount,
+      status: OperationState.getOperationStateFromString(
+        operationCollection.status,
+      ),
     );
   }
 

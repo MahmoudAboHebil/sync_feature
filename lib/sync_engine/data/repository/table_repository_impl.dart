@@ -125,7 +125,8 @@ class TableRepositoryImpl implements TableRepository {
   }
 
   @override
-  Future<Either<Failure, void>> deleteEntityCascadeNotNull(
+  Future<Either<Failure, Map<DBTable, List<String>>>>
+  deleteEntityCascadeNotNull(
     DBTable startTable,
     String entityId, {
     bool test = false,
@@ -136,6 +137,10 @@ class TableRepositoryImpl implements TableRepository {
         entityId,
         test: test,
       );
+      if (result.isLeft) {
+        final leftValue = result.fold(ifLeft: (l) => l, ifRight: (d) => null);
+        return Left(leftValue!);
+      }
       Map<DBTable, List<String>> tableEntityRemoveIds = result.getOrThrow();
       //todo: delete subs  from db && queue
       for (final tab in tableEntityRemoveIds.entries) {
@@ -148,7 +153,7 @@ class TableRepositoryImpl implements TableRepository {
       //todo: delete main  from db
       final dataSource = _getTableDataSource(startTable);
       await dataSource.softDelete(entityId);
-      return Right(null);
+      return Right(result.getOrThrow());
     } catch (e) {
       return Left(ProcessingFailure(message: e.toString()));
     }

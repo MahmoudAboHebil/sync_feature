@@ -11,6 +11,7 @@ import 'package:sync_feature/sync_engine/domain/use_cases/get_table_queue_usecas
 
 import 'core/enums/DB_Table.dart';
 import 'core/enums/operation_action.dart';
+import 'core/enums/operation_status.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -66,6 +67,10 @@ class MyApp extends StatelessWidget {
                 userRole: currentUserRole,
                 createdBy: currentUser,
                 createdAt: entityData,
+                nextRetryAt: DateTime.now(),
+                lastAttemptAt: DateTime.now(),
+                retryCount: 0,
+                status: OperationState.pending,
               );
 
               final addParams = AddOperationLocalUseCaseParams(

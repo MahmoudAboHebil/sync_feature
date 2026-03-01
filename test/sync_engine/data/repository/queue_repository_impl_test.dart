@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:sync_feature/core/enums/DB_Table.dart';
 import 'package:sync_feature/core/enums/operation_action.dart';
+import 'package:sync_feature/core/enums/operation_status.dart';
 import 'package:sync_feature/core/enums/user_role.dart';
 import 'package:sync_feature/core/isar_service/collections/operation_collection.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/local_queue_datasource.dart';
@@ -93,6 +94,10 @@ void main() {
         userRole: UserRole.admin,
         createdBy: 'ahmed',
         createdAt: DateTime(2026, 2, 1, 2),
+        nextRetryAt: DateTime.now(),
+        lastAttemptAt: DateTime.now(),
+        retryCount: 0,
+        status: OperationState.pending,
       );
 
       when(
@@ -187,6 +192,10 @@ void main() {
         userRole: UserRole.admin,
         createdBy: 'ahmed',
         createdAt: DateTime(2026, 2, 1, 2),
+        nextRetryAt: DateTime.now(),
+        lastAttemptAt: DateTime.now(),
+        retryCount: 0,
+        status: OperationState.pending,
       );
 
       when(
@@ -282,6 +291,10 @@ void main() {
         userRole: UserRole.admin,
         createdBy: 'ahmed',
         createdAt: DateTime(2026, 2, 1, 2),
+        nextRetryAt: DateTime.now(),
+        lastAttemptAt: DateTime.now(),
+        retryCount: 0,
+        status: OperationState.pending,
       );
 
       when(

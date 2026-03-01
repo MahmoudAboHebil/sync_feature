@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sync_feature/config/constants.dart';
 import 'package:sync_feature/core/enums/DB_Table.dart';
 import 'package:sync_feature/core/enums/operation_action.dart';
+import 'package:sync_feature/core/enums/operation_status.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/local_queue_datasource.dart';
 import 'package:sync_feature/sync_engine/data/repository/queue_repository_impl.dart';
 import 'package:sync_feature/sync_engine/domain/entities/operation.dart';
@@ -41,6 +42,10 @@ void main() {
       userRole: currentUserRole,
       createdBy: currentUser,
       createdAt: entityData,
+      nextRetryAt: DateTime.now(),
+      lastAttemptAt: DateTime.now(),
+      retryCount: 0,
+      status: OperationState.pending,
     );
 
     final addParams = AddOperationLocalUseCaseParams(operation: operationFive);
@@ -103,6 +108,10 @@ void main() {
       userRole: currentUserRole,
       createdBy: currentUser,
       createdAt: entityData,
+      nextRetryAt: DateTime.now(),
+      lastAttemptAt: DateTime.now(),
+      retryCount: 0,
+      status: OperationState.pending,
     );
 
     final addParams = AddOperationLocalUseCaseParams(operation: operationFive);
@@ -165,6 +174,10 @@ void main() {
       userRole: currentUserRole,
       createdBy: currentUser,
       createdAt: entityData,
+      nextRetryAt: DateTime.now(),
+      lastAttemptAt: DateTime.now(),
+      retryCount: 0,
+      status: OperationState.pending,
     );
 
     final addParams = AddOperationLocalUseCaseParams(operation: operationFive);
@@ -227,6 +240,10 @@ void main() {
       userRole: currentUserRole,
       createdBy: currentUser,
       createdAt: entityData,
+      nextRetryAt: DateTime.now(),
+      lastAttemptAt: DateTime.now(),
+      retryCount: 0,
+      status: OperationState.pending,
     );
 
     final addParams = AddOperationLocalUseCaseParams(operation: operationFive);
@@ -289,6 +306,10 @@ void main() {
       userRole: currentUserRole,
       createdBy: currentUser,
       createdAt: entityData,
+      nextRetryAt: DateTime.now(),
+      lastAttemptAt: DateTime.now(),
+      retryCount: 0,
+      status: OperationState.pending,
     );
 
     final addParams = AddOperationLocalUseCaseParams(operation: operationFive);

@@ -3,6 +3,7 @@ import 'package:sync_feature/config/constants.dart';
 import 'package:sync_feature/core/enums/DB_Table.dart';
 import 'package:sync_feature/core/enums/operation_action.dart'
     show OperationAction;
+import 'package:sync_feature/core/enums/operation_status.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/local_queue_datasource.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/local_table_one_datasource_impl.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/sync_datasource.dart';
@@ -14,7 +15,7 @@ import 'package:sync_feature/sync_engine/domain/entities/table_five.dart';
 import 'package:sync_feature/sync_engine/domain/use_cases/add_entity_local_usecase.dart';
 import 'package:sync_feature/sync_engine/domain/use_cases/add_operation_local_usecase.dart';
 import 'package:sync_feature/sync_engine/domain/use_cases/get_table_queue_usecase.dart';
-import 'package:sync_feature/sync_engine/domain/use_cases/push_single_operation_usecase.dart';
+import 'package:sync_feature/sync_engine/domain/use_cases/send_operation_to_server_usecase.dart';
 
 void main() {
   test('version conflict when (op.version < entity.version', () async {
@@ -26,11 +27,17 @@ void main() {
       queueDatasource,
       tableDatasource,
     );
-    final syncRepository = SyncRepositoryImpl(tableRepository, syncDatasource);
+    final queueRepo = QueueRepositoryImpl(queueDatasource);
+
+    final syncRepository = SyncRepositoryImpl(
+      tableRepository,
+      syncDatasource,
+      queueRepo,
+    );
     final addEntityUseCase = AddEntityLocalUseCase(tableRepository);
     final addOperationUseCase = AddOperationLocalUseCase(queueRepository);
     final getTableQueueUseCase = GetTableQueueUseCase(queueRepository);
-    final pushSingleOperationUseCase = PushSingleOperationUseCase(
+    final pushSingleOperationUseCase = SendOperationToServerUseCase(
       syncRepository,
     );
 
@@ -59,11 +66,15 @@ void main() {
       userRole: currentUserRole,
       createdBy: currentUser,
       createdAt: DateTime.now(),
+      nextRetryAt: DateTime.now(),
+      lastAttemptAt: DateTime.now(),
+      retryCount: 0,
+      status: OperationState.pending,
     );
 
     // push operation to server
     final result = await pushSingleOperationUseCase.call(
-      PushSingleOperationUseCaseParams(
+      SendOperationToServerUseCaseParams(
         operation: operationFive,
         deviceId: deviceId,
       ),
@@ -88,11 +99,17 @@ void main() {
       queueDatasource,
       tableDatasource,
     );
-    final syncRepository = SyncRepositoryImpl(tableRepository, syncDatasource);
+    final queueRepo = QueueRepositoryImpl(queueDatasource);
+
+    final syncRepository = SyncRepositoryImpl(
+      tableRepository,
+      syncDatasource,
+      queueRepo,
+    );
     final addEntityUseCase = AddEntityLocalUseCase(tableRepository);
     final addOperationUseCase = AddOperationLocalUseCase(queueRepository);
     final getTableQueueUseCase = GetTableQueueUseCase(queueRepository);
-    final pushSingleOperationUseCase = PushSingleOperationUseCase(
+    final pushSingleOperationUseCase = SendOperationToServerUseCase(
       syncRepository,
     );
 
@@ -121,11 +138,15 @@ void main() {
       userRole: currentUserRole,
       createdBy: currentUser,
       createdAt: DateTime.now(),
+      nextRetryAt: DateTime.now(),
+      lastAttemptAt: DateTime.now(),
+      retryCount: 0,
+      status: OperationState.pending,
     );
 
     // push operation to server
     final result = await pushSingleOperationUseCase.call(
-      PushSingleOperationUseCaseParams(
+      SendOperationToServerUseCaseParams(
         operation: operationFive,
         deviceId: deviceId,
       ),

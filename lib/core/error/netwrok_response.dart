@@ -6,6 +6,7 @@ class NetworkResponse {
   const NetworkResponse({this.details, this.data});
 }
 
+// done
 class NetworkSuccess extends NetworkResponse {
   @override
   String toString() {
@@ -13,6 +14,7 @@ class NetworkSuccess extends NetworkResponse {
   }
 }
 
+// done
 class OperationAlreadyProcessed extends NetworkSuccess {
   @override
   String toString() {
@@ -28,6 +30,7 @@ class NetworkFailure extends NetworkResponse {
   }
 }
 
+//done
 class ParentIsDeleted extends NetworkFailure {
   ParentIsDeleted(Map<String, dynamic> parentIds)
     : super(data: Helper.cleanParentIds(parentIds));
@@ -37,6 +40,7 @@ class ParentIsDeleted extends NetworkFailure {
   }
 }
 
+// done
 class EntityIsNotFound extends NetworkFailure {
   const EntityIsNotFound({required super.data});
   @override
@@ -45,6 +49,7 @@ class EntityIsNotFound extends NetworkFailure {
   }
 }
 
+// done
 class EntityIsDeleted extends NetworkFailure {
   const EntityIsDeleted({required super.data});
   @override
@@ -53,6 +58,7 @@ class EntityIsDeleted extends NetworkFailure {
   }
 }
 
+//done
 class VersionConflict extends NetworkFailure {
   const VersionConflict({required super.data});
   @override

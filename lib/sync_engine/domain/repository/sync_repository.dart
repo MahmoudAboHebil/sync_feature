@@ -1,11 +1,13 @@
 import 'package:dart_either/dart_either.dart';
+import 'package:sync_feature/core/enums/DB_Table.dart';
+import 'package:sync_feature/core/error/sync_response.dart';
 import 'package:sync_feature/sync_engine/domain/entities/operation.dart';
 
 import '../../../core/error/failure.dart';
 import '../../../core/error/netwrok_response.dart';
 
 abstract class SyncRepository {
-  Future<Either<Failure, NetworkResponse>> pushSingleOperation(
+  Future<Either<Failure, NetworkResponse>> sendOperationToServer(
     Operation operation,
     String deviceId,
   );

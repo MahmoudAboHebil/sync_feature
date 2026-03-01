@@ -1,19 +1,26 @@
+import 'package:dart_either/dart_either.dart';
 import 'package:dart_either/src/dart_either.dart';
 import 'package:sync_feature/core/error/failure.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/sync_datasource.dart';
-import 'package:sync_feature/sync_engine/data/repository/table_repository_impl.dart';
 import 'package:sync_feature/sync_engine/domain/entities/operation.dart';
 import 'package:sync_feature/sync_engine/domain/repository/sync_repository.dart';
 
 import '../../../core/error/netwrok_response.dart';
+import '../../domain/repository/queue_repository.dart';
+import '../../domain/repository/table_repository.dart';
 
 class SyncRepositoryImpl extends SyncRepository {
-  final TableRepositoryImpl _tableRepositoryImpl;
+  final TableRepository _tableRepositoryImpl;
+  final QueueRepository _queueRepository;
   final SyncDatasource _syncDatasource;
-  SyncRepositoryImpl(this._tableRepositoryImpl, this._syncDatasource);
+  SyncRepositoryImpl(
+    this._tableRepositoryImpl,
+    this._syncDatasource,
+    this._queueRepository,
+  );
 
   @override
-  Future<Either<Failure, NetworkResponse>> pushSingleOperation(
+  Future<Either<Failure, NetworkResponse>> sendOperationToServer(
     Operation operation,
     String deviceId,
   ) async {

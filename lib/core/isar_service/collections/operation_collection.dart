@@ -15,4 +15,8 @@ class OperationCollection {
   late String userRole;
   late String createdBy;
   late DateTime createdAt;
+  late int retryCount;
+  late DateTime lastAttemptAt;
+  late DateTime nextRetryAt;
+  late String status;
 }

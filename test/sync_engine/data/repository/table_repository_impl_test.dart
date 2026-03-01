@@ -3,6 +3,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:sync_feature/config/constants.dart';
 import 'package:sync_feature/core/enums/DB_Table.dart';
 import 'package:sync_feature/core/enums/operation_action.dart';
+import 'package:sync_feature/core/enums/operation_status.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/local_queue_datasource.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/local_table_datasource.dart';
 import 'package:sync_feature/sync_engine/data/models/operation_model.dart';
@@ -68,6 +69,10 @@ void main() {
       userRole: currentUserRole,
       createdBy: currentUser,
       createdAt: DateTime.now(),
+      nextRetryAt: DateTime.now(),
+      lastAttemptAt: DateTime.now(),
+      retryCount: 0,
+      status: OperationState.pending,
     );
 
     final payload = {

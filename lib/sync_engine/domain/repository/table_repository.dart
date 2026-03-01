@@ -7,7 +7,8 @@ import 'package:sync_feature/sync_engine/domain/entities/standard_table_record.d
 import '../../../core/error/netwrok_response.dart';
 
 abstract class TableRepository {
-  Future<Either<Failure, void>> deleteEntityCascadeNotNull(
+  Future<Either<Failure, Map<DBTable, List<String>>>>
+  deleteEntityCascadeNotNull(
     DBTable table,
     String entityId, {
     bool test = false,

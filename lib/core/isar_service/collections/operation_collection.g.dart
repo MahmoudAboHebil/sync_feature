@@ -43,28 +43,48 @@ const OperationCollectionSchema = CollectionSchema(
       name: r'entityId',
       type: IsarType.string,
     ),
-    r'operationId': PropertySchema(
+    r'lastAttemptAt': PropertySchema(
       id: 5,
+      name: r'lastAttemptAt',
+      type: IsarType.dateTime,
+    ),
+    r'nextRetryAt': PropertySchema(
+      id: 6,
+      name: r'nextRetryAt',
+      type: IsarType.dateTime,
+    ),
+    r'operationId': PropertySchema(
+      id: 7,
       name: r'operationId',
       type: IsarType.string,
     ),
     r'payload': PropertySchema(
-      id: 6,
+      id: 8,
       name: r'payload',
       type: IsarType.string,
     ),
+    r'retryCount': PropertySchema(
+      id: 9,
+      name: r'retryCount',
+      type: IsarType.long,
+    ),
+    r'status': PropertySchema(
+      id: 10,
+      name: r'status',
+      type: IsarType.string,
+    ),
     r'table': PropertySchema(
-      id: 7,
+      id: 11,
       name: r'table',
       type: IsarType.string,
     ),
     r'userRole': PropertySchema(
-      id: 8,
+      id: 12,
       name: r'userRole',
       type: IsarType.string,
     ),
     r'version': PropertySchema(
-      id: 9,
+      id: 13,
       name: r'version',
       type: IsarType.long,
     )
@@ -95,6 +115,7 @@ int _operationCollectionEstimateSize(
   bytesCount += 3 + object.entityId.length * 3;
   bytesCount += 3 + object.operationId.length * 3;
   bytesCount += 3 + object.payload.length * 3;
+  bytesCount += 3 + object.status.length * 3;
   bytesCount += 3 + object.table.length * 3;
   bytesCount += 3 + object.userRole.length * 3;
   return bytesCount;
@@ -111,11 +132,15 @@ void _operationCollectionSerialize(
   writer.writeDateTime(offsets[2], object.createdAt);
   writer.writeString(offsets[3], object.createdBy);
   writer.writeString(offsets[4], object.entityId);
-  writer.writeString(offsets[5], object.operationId);
-  writer.writeString(offsets[6], object.payload);
-  writer.writeString(offsets[7], object.table);
-  writer.writeString(offsets[8], object.userRole);
-  writer.writeLong(offsets[9], object.version);
+  writer.writeDateTime(offsets[5], object.lastAttemptAt);
+  writer.writeDateTime(offsets[6], object.nextRetryAt);
+  writer.writeString(offsets[7], object.operationId);
+  writer.writeString(offsets[8], object.payload);
+  writer.writeLong(offsets[9], object.retryCount);
+  writer.writeString(offsets[10], object.status);
+  writer.writeString(offsets[11], object.table);
+  writer.writeString(offsets[12], object.userRole);
+  writer.writeLong(offsets[13], object.version);
 }
 
 OperationCollection _operationCollectionDeserialize(
@@ -131,11 +156,15 @@ OperationCollection _operationCollectionDeserialize(
   object.createdBy = reader.readString(offsets[3]);
   object.entityId = reader.readString(offsets[4]);
   object.id = id;
-  object.operationId = reader.readString(offsets[5]);
-  object.payload = reader.readString(offsets[6]);
-  object.table = reader.readString(offsets[7]);
-  object.userRole = reader.readString(offsets[8]);
-  object.version = reader.readLong(offsets[9]);
+  object.lastAttemptAt = reader.readDateTime(offsets[5]);
+  object.nextRetryAt = reader.readDateTime(offsets[6]);
+  object.operationId = reader.readString(offsets[7]);
+  object.payload = reader.readString(offsets[8]);
+  object.retryCount = reader.readLong(offsets[9]);
+  object.status = reader.readString(offsets[10]);
+  object.table = reader.readString(offsets[11]);
+  object.userRole = reader.readString(offsets[12]);
+  object.version = reader.readLong(offsets[13]);
   return object;
 }
 
@@ -157,14 +186,22 @@ P _operationCollectionDeserializeProp<P>(
     case 4:
       return (reader.readString(offset)) as P;
     case 5:
-      return (reader.readString(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 6:
-      return (reader.readString(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 7:
       return (reader.readString(offset)) as P;
     case 8:
       return (reader.readString(offset)) as P;
     case 9:
+      return (reader.readLong(offset)) as P;
+    case 10:
+      return (reader.readString(offset)) as P;
+    case 11:
+      return (reader.readString(offset)) as P;
+    case 12:
+      return (reader.readString(offset)) as P;
+    case 13:
       return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -924,6 +961,118 @@ extension OperationCollectionQueryFilter on QueryBuilder<OperationCollection,
   }
 
   QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      lastAttemptAtEqualTo(DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastAttemptAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      lastAttemptAtGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastAttemptAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      lastAttemptAtLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastAttemptAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      lastAttemptAtBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastAttemptAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      nextRetryAtEqualTo(DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'nextRetryAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      nextRetryAtGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'nextRetryAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      nextRetryAtLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'nextRetryAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      nextRetryAtBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'nextRetryAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
       operationIdEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1190,6 +1339,198 @@ extension OperationCollectionQueryFilter on QueryBuilder<OperationCollection,
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'payload',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      retryCountEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'retryCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      retryCountGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'retryCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      retryCountLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'retryCount',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      retryCountBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'retryCount',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      statusEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'status',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      statusGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'status',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      statusLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'status',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      statusBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'status',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      statusStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'status',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      statusEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'status',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      statusContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'status',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      statusMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'status',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      statusIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'status',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterFilterCondition>
+      statusIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'status',
         value: '',
       ));
     });
@@ -1603,6 +1944,34 @@ extension OperationCollectionQuerySortBy
   }
 
   QueryBuilder<OperationCollection, OperationCollection, QAfterSortBy>
+      sortByLastAttemptAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastAttemptAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterSortBy>
+      sortByLastAttemptAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastAttemptAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterSortBy>
+      sortByNextRetryAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nextRetryAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterSortBy>
+      sortByNextRetryAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nextRetryAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterSortBy>
       sortByOperationId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'operationId', Sort.asc);
@@ -1627,6 +1996,34 @@ extension OperationCollectionQuerySortBy
       sortByPayloadDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'payload', Sort.desc);
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterSortBy>
+      sortByRetryCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'retryCount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterSortBy>
+      sortByRetryCountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'retryCount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterSortBy>
+      sortByStatus() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'status', Sort.asc);
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterSortBy>
+      sortByStatusDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'status', Sort.desc);
     });
   }
 
@@ -1760,6 +2157,34 @@ extension OperationCollectionQuerySortThenBy
   }
 
   QueryBuilder<OperationCollection, OperationCollection, QAfterSortBy>
+      thenByLastAttemptAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastAttemptAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterSortBy>
+      thenByLastAttemptAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastAttemptAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterSortBy>
+      thenByNextRetryAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nextRetryAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterSortBy>
+      thenByNextRetryAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'nextRetryAt', Sort.desc);
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterSortBy>
       thenByOperationId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'operationId', Sort.asc);
@@ -1784,6 +2209,34 @@ extension OperationCollectionQuerySortThenBy
       thenByPayloadDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'payload', Sort.desc);
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterSortBy>
+      thenByRetryCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'retryCount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterSortBy>
+      thenByRetryCountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'retryCount', Sort.desc);
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterSortBy>
+      thenByStatus() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'status', Sort.asc);
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QAfterSortBy>
+      thenByStatusDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'status', Sort.desc);
     });
   }
 
@@ -1868,6 +2321,20 @@ extension OperationCollectionQueryWhereDistinct
   }
 
   QueryBuilder<OperationCollection, OperationCollection, QDistinct>
+      distinctByLastAttemptAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'lastAttemptAt');
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QDistinct>
+      distinctByNextRetryAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'nextRetryAt');
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QDistinct>
       distinctByOperationId({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'operationId', caseSensitive: caseSensitive);
@@ -1878,6 +2345,20 @@ extension OperationCollectionQueryWhereDistinct
       distinctByPayload({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'payload', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QDistinct>
+      distinctByRetryCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'retryCount');
+    });
+  }
+
+  QueryBuilder<OperationCollection, OperationCollection, QDistinct>
+      distinctByStatus({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'status', caseSensitive: caseSensitive);
     });
   }
 
@@ -1945,6 +2426,20 @@ extension OperationCollectionQueryProperty
     });
   }
 
+  QueryBuilder<OperationCollection, DateTime, QQueryOperations>
+      lastAttemptAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'lastAttemptAt');
+    });
+  }
+
+  QueryBuilder<OperationCollection, DateTime, QQueryOperations>
+      nextRetryAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'nextRetryAt');
+    });
+  }
+
   QueryBuilder<OperationCollection, String, QQueryOperations>
       operationIdProperty() {
     return QueryBuilder.apply(this, (query) {
@@ -1956,6 +2451,19 @@ extension OperationCollectionQueryProperty
       payloadProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'payload');
+    });
+  }
+
+  QueryBuilder<OperationCollection, int, QQueryOperations>
+      retryCountProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'retryCount');
+    });
+  }
+
+  QueryBuilder<OperationCollection, String, QQueryOperations> statusProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'status');
     });
   }
 
