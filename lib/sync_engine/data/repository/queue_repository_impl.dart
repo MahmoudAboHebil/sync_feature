@@ -26,17 +26,16 @@ class QueueRepositoryImpl extends QueueRepository {
           .map((e) => e.action == OperationAction.update)
           .toList()
           .isNotEmpty;
-
       if (isThereCreatedOpers) {
         if (operation.action == OperationAction.update) {
-          if (isThereUpdatedOpers) {
-            await _localQueueDatasource.removeOperationsContainsAction(
-              operation.entityId,
-              OperationAction.update,
-            );
-          }
+          await _localQueueDatasource.removeOperationsByEntity(
+            operation.entityId,
+          );
+          final newOperation = operation.copyWith(
+            action: OperationAction.create,
+          );
           await _localQueueDatasource.insertToQueue(
-            OperationModel.fromOperation(operation),
+            OperationModel.fromOperation(newOperation),
           );
           return Right(null);
         } else if (operation.action == OperationAction.delete) {

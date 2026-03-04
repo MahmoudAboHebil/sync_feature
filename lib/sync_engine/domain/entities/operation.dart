@@ -36,6 +36,41 @@ class Operation extends Equatable {
     required this.nextRetryAt,
     required this.status,
   });
+
+  Operation copyWith({
+    String? centerId,
+    String? id,
+    String? entityId,
+    OperationAction? action,
+    DBTable? table,
+    Map<String, dynamic>? json,
+    int? version,
+    UserRole? userRole,
+    String? createdBy,
+    DateTime? createdAt,
+    int? retryCount,
+    DateTime? lastAttemptAt,
+    DateTime? nextRetryAt,
+    OperationState? status,
+  }) {
+    return Operation(
+      id: id ?? this.id,
+      entityId: entityId ?? this.entityId,
+      centerId: centerId ?? this.centerId,
+      action: action ?? this.action,
+      table: table ?? this.table,
+      json: json ?? this.json,
+      version: version ?? this.version,
+      userRole: userRole ?? this.userRole,
+      createdBy: createdBy ?? this.createdBy,
+      createdAt: createdAt ?? this.createdAt,
+      retryCount: retryCount ?? this.retryCount,
+      lastAttemptAt: lastAttemptAt ?? this.lastAttemptAt,
+      nextRetryAt: nextRetryAt ?? this.nextRetryAt,
+      status: status ?? this.status,
+    );
+  }
+
   @override
   List<Object> get props => [
     id,

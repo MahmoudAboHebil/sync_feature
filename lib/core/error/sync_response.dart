@@ -16,4 +16,16 @@ class SyncResponse {
     required this.willTry,
     this.isError = false,
   });
+
+  @override
+  String toString() {
+    return """
+    operation = ${operation.id}
+    networkResponse = ${networkResponse.toString()}
+    isError     = ${isError}
+    willTry     = ${willTry}
+    deletedEntities     = ${deletedEntities}
+    
+    """;
+  }
 }

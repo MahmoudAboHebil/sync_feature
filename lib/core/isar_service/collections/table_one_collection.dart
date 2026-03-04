@@ -6,13 +6,13 @@ part 'table_one_collection.g.dart';
 class TableOneCollection {
   Id id = Isar.autoIncrement;
   @Index()
-  late final String entityId;
-  late final String centerId;
-  late final String message;
-  late final String byUser;
-  late final String byDevice;
-  late final bool isDeleted;
-  late final int version;
-  late final DateTime createdAt;
-  late final DateTime updatedAt;
+  late String entityId;
+  late String centerId;
+  late String message;
+  late String byUser;
+  late String byDevice;
+  late bool isDeleted;
+  late int version;
+  late DateTime createdAt;
+  late DateTime updatedAt;
 }

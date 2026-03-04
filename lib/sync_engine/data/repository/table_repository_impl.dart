@@ -153,7 +153,10 @@ class TableRepositoryImpl implements TableRepository {
       //todo: delete main  from db
       final dataSource = _getTableDataSource(startTable);
       await dataSource.softDelete(entityId);
-      return Right(result.getOrThrow());
+      final tableIds = tableEntityRemoveIds[startTable] ?? [];
+
+      tableEntityRemoveIds[startTable] = {...tableIds, entityId}.toList();
+      return Right(tableEntityRemoveIds);
     } catch (e) {
       return Left(ProcessingFailure(message: e.toString()));
     }
@@ -273,12 +276,18 @@ class TableRepositoryImpl implements TableRepository {
         'sync-operation',
         body: payload,
       );
+      print('1dddddddddddddddddddddddddddddddddddddd');
+      print(response.toString());
       final result = Helper.handleSyncOperationResponse(response.data);
       return Right(result);
     } on FunctionException catch (e) {
-      final result = Helper.handleSyncOperationResponse(e.details);
+      print('2dddddddddddddddddddddddddddddddddddddd');
+      print(e);
+      final result = InternalServerError(details: e.details);
       return Right(result);
     } catch (e) {
+      print('3dddddddddddddddddddddddddddddddddddddd');
+      print(e);
       return Left(ProcessingFailure(message: e.toString()));
     }
   }

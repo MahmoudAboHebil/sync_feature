@@ -35,7 +35,7 @@ class LocalQueueDatasource {
         .findFirst();
 
     if (oldOperation != null) {
-      final newState = state == null ? oldOperation.status : state.toString();
+      final newState = state == null ? oldOperation.status : state.name;
       final newCollection = oldOperation
         ..status = newState
         ..retryCount = (retryCount ?? oldOperation.retryCount)
@@ -116,9 +116,14 @@ class LocalQueueDatasource {
         .entityIdEqualTo(entityId)
         .sortByCreatedAt()
         .findAll();
-    return collections
+    print('cccsdfsdf ${collections.length}');
+
+    final x = collections
         .map((coll) => OperationModel.fromCollection(coll))
         .toList();
+
+    print(x);
+    return x;
   }
 
   Future<void> removeOperationsByEntity(String entityId) async {

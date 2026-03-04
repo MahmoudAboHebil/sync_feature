@@ -6,17 +6,17 @@ part 'table_five_collection.g.dart';
 class TableFiveCollection {
   Id id = Isar.autoIncrement;
   @Index()
-  late final String entityId;
+  late String entityId;
   @Index()
-  late final String forKeyTableFour;
+  late String forKeyTableFour;
   @Index()
-  late final String forKeyTableThree;
-  late final String centerId;
-  late final String message;
-  late final String byUser;
-  late final String byDevice;
-  late final bool isDeleted;
-  late final int version;
-  late final DateTime createdAt;
-  late final DateTime updatedAt;
+  late String forKeyTableThree;
+  late String centerId;
+  late String message;
+  late String byUser;
+  late String byDevice;
+  late bool isDeleted;
+  late int version;
+  late DateTime createdAt;
+  late DateTime updatedAt;
 }

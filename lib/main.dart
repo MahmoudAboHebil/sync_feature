@@ -3,11 +3,18 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sync_feature/config/constants.dart';
 import 'package:sync_feature/core/isar_service/isar_service.dart';
 import 'package:sync_feature/sync_engine/data/data_source/local/local_queue_datasource.dart';
+import 'package:sync_feature/sync_engine/data/data_source/local/local_table_one_datasource_impl.dart';
+import 'package:sync_feature/sync_engine/data/data_source/local/sync_datasource.dart';
 import 'package:sync_feature/sync_engine/data/repository/queue_repository_impl.dart';
+import 'package:sync_feature/sync_engine/data/repository/sync_repository_impl.dart';
+import 'package:sync_feature/sync_engine/data/repository/table_repository_impl.dart';
 import 'package:sync_feature/sync_engine/domain/entities/operation.dart';
 import 'package:sync_feature/sync_engine/domain/entities/table_five.dart';
+import 'package:sync_feature/sync_engine/domain/use_cases/add_entity_local_usecase.dart';
 import 'package:sync_feature/sync_engine/domain/use_cases/add_operation_local_usecase.dart';
 import 'package:sync_feature/sync_engine/domain/use_cases/get_table_queue_usecase.dart';
+import 'package:sync_feature/sync_engine/domain/use_cases/push_single_table_usecase.dart';
+import 'package:sync_feature/sync_engine/domain/use_cases/send_operation_to_server_usecase.dart';
 
 import 'core/enums/DB_Table.dart';
 import 'core/enums/operation_action.dart';
@@ -37,72 +44,95 @@ class MyApp extends StatelessWidget {
         body: Center(
           child: TextButton(
             onPressed: () async {
-              final queueDataSource = LocalQueueDatasource();
-              final queueRepo = QueueRepositoryImpl(queueDataSource);
-              final addUseCase = AddOperationLocalUseCase(queueRepo);
-              final getUseCase = GetTableQueueUseCase(queueRepo);
-              final entityData = DateTime.now().toUtc();
-              final entityTwo = TableFive(
-                forKeyTableThree: "x3x87ca56-89c8-42fd-9d8c-0b0c2be7c5d6",
-                forKeyTableFour: "x4x87ca56-89c8-42fd-9d8c-0b0c2be7c5d6",
-                entityId: "811100ea-4383-4710-a6e6-9fee6b61034d",
-                message: 'hellow from table five 1',
-                centerId: "5d242021-432d-41ea-ac04-fba60e368fd3",
+              final queueDatasource = LocalQueueDatasource();
+              final tableDatasource = LocalTableOneDatasource();
+              final syncDatasource = SyncDatasource();
+              final tableRepository = TableRepositoryImpl(
+                queueDatasource,
+                tableDatasource,
+              );
+              final queueRepo = QueueRepositoryImpl(queueDatasource);
+              final syncRepository = SyncRepositoryImpl(
+                tableRepository,
+                syncDatasource,
+                queueRepo,
+              );
+              final getTableQueueUseCase = GetTableQueueUseCase(queueRepo);
+              final sendOperationToServerUseCase = SendOperationToServerUseCase(
+                syncRepository,
+              );
+              final addOperationLocalUseCase = AddOperationLocalUseCase(
+                queueRepo,
+              );
+              final addEntityToLocalUseCase = AddEntityLocalUseCase(
+                tableRepository,
+              );
+              final pushSyncUseCase = PushSingleTableUseCase(
+                queueRepo,
+                tableRepository,
+                getTableQueueUseCase,
+                sendOperationToServerUseCase,
+              );
+
+              final tableFiveEntity = TableFive(
+                entityId: "e4e0ffca-18d0-4df6-ad40-d84307f9fcaa",
+                forKeyTableThree: "a01ecd92-e27b-46b6-9ee3-432b1f798bbe",
+                forKeyTableFour: "2968e74e-a3f1-4fed-8796-91fd5ab3ee52",
+                message: 'hellow from table two',
+                centerId: centerId,
                 byUser: currentUser,
                 byDevice: deviceId,
                 isDeleted: false,
-                version: 1,
-                createdAt: entityData,
-                updatedAt: entityData,
+                version: 3,
+                createdAt: DateTime.now().toUtc(),
+                updatedAt: DateTime.now().toUtc(),
               );
-              print('entity_data= $entityData');
-              final operationFive = Operation(
-                id: "2",
-                entityId: "811100ea-4383-4710-a6e6-9fee6b61034d",
-                centerId: "5d242021-432d-41ea-ac04-fba60e368fd3",
-                action: OperationAction.delete,
+              final fiveOperation = Operation(
+                id: "e5e693b1-9ddd-4aae-9ae2-09e47e9f0dfa",
+                entityId: 'e4e0ffca-18d0-4df6-ad40-d84307f9fcaa',
+                centerId: centerId,
+                action: OperationAction.update,
                 table: DBTable.table_five,
-                json: entityTwo.toJson(),
-                version: 1,
+                json: tableFiveEntity.toJson(),
+                version: 3,
                 userRole: currentUserRole,
                 createdBy: currentUser,
-                createdAt: entityData,
-                nextRetryAt: DateTime.now(),
-                lastAttemptAt: DateTime.now(),
+                createdAt: DateTime.now(),
                 retryCount: 0,
+                lastAttemptAt: DateTime.now(),
+                nextRetryAt: DateTime.now(),
                 status: OperationState.pending,
               );
 
-              final addParams = AddOperationLocalUseCaseParams(
-                operation: operationFive,
+              //todo: add operation to queue
+              final fiveResultOpera = await addOperationLocalUseCase.call(
+                AddOperationLocalUseCaseParams(operation: fiveOperation),
               );
-              final getParams = GetTableQueueUseCaseParams(
-                table: DBTable.table_five,
-              );
-              final result = await addUseCase.call(addParams);
-              await result.fold(
+              fiveResultOpera.fold(
                 ifLeft: (err) {
-                  print('Error: add operation to queue');
+                  print('Error : add oper 1 to queue');
                   print(err);
                 },
-                ifRight: (d) async {
-                  print('Success: add operation to queue');
-                  final result = await getUseCase.call(getParams);
-                  result.fold(
-                    ifLeft: (err) {
-                      print('Error: get Queue operations');
-                      print(err);
-                    },
-                    ifRight: (data) {
-                      print('Success: get Queue operations');
-                      for (var d in data) {
-                        print('ddddddddddddddddddddddddddddd');
-                        print("oper_data: ${d.createdAt}");
-                        print("entity_id: ${d.json['id']}");
-                        print("entity_data: ${d.json['created_at']}");
-                      }
-                    },
-                  );
+                ifRight: (e) {
+                  print('Success : add oper 1 to queue');
+                },
+              );
+
+              //todo: push operation to server
+              final pushResult1 = await pushSyncUseCase.call(
+                PushSingleTableUseCaseParams(
+                  table: DBTable.table_five,
+                  deviceId: deviceId,
+                ),
+              );
+              pushResult1.fold(
+                ifLeft: (err) {
+                  print('Error : push 1 to server');
+                  print(err);
+                },
+                ifRight: (e) {
+                  print(e);
+                  print('Success : push 1 to server');
                 },
               );
             },
