@@ -61,6 +61,14 @@ const Map<DBTable, Map<String, List<DBTable>>> tabelRelationsNotNull = {
   },
 };
 
+const List<DBTable> arrangedSyncTables = [
+  DBTable.table_one,
+  DBTable.table_two,
+  DBTable.table_three,
+  DBTable.table_four,
+  DBTable.table_five,
+];
+
 final List<TableOneCollection> tableOne = [
   TableOneCollection()
     ..id = 1

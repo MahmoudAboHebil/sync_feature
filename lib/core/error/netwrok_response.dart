@@ -1,9 +1,13 @@
+import 'package:equatable/equatable.dart';
 import 'package:sync_feature/core/helper.dart';
 
-class NetworkResponse {
+class NetworkResponse extends Equatable {
   final String? details;
   final Map<String, dynamic>? data;
   const NetworkResponse({this.details, this.data});
+
+  @override
+  List<Object?> get props => [details, data];
 }
 
 // done

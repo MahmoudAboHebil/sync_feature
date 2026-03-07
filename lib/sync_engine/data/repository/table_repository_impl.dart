@@ -207,6 +207,7 @@ class TableRepositoryImpl implements TableRepository {
           .eq('center_id', centerId)
           .gt('push_time', lastTimeSync.toUtc().toIso8601String())
           .neq('by_device', deviceId);
+
       return Right(response);
     } catch (e) {
       return Left(ProcessingFailure(message: e.toString()));

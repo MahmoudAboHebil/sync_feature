@@ -1,9 +1,10 @@
+import 'package:equatable/equatable.dart';
 import 'package:sync_feature/core/error/netwrok_response.dart';
 import 'package:sync_feature/sync_engine/domain/entities/operation.dart';
 
 import '../enums/DB_Table.dart';
 
-class SyncResponse {
+class SyncResponse extends Equatable {
   final Operation operation;
   final bool isError;
   final bool willTry;
@@ -28,4 +29,14 @@ class SyncResponse {
     
     """;
   }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [
+    operation,
+    isError,
+    willTry,
+    networkResponse,
+    deletedEntities,
+  ];
 }
