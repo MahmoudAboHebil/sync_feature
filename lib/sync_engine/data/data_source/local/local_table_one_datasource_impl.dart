@@ -82,7 +82,8 @@ class LocalTableOneDatasource implements LocalTableDatasource {
         ..isDeleted = modelOne.isDeleted
         ..message = modelOne.message;
       await IsarService.isar.writeTxn(() async {
-        await IsarService.isar.tableOneCollections.put(newCollection);
+        final x = await IsarService.isar.tableOneCollections.put(newCollection);
+        print('final update =$x');
       });
     } else {
       throw Exception(

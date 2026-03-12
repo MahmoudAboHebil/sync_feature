@@ -106,4 +106,20 @@ class TableTwoModel extends StandardTableRecordModel with EquatableMixin {
       ..updatedAt = updatedAt.toUtc()
       ..message = message;
   }
+
+  @override
+  TableTwo toEntity() {
+    return TableTwo(
+      forkeyTableOne: forkeyTableOne,
+      entityId: entityId,
+      message: message,
+      centerId: centerId,
+      byUser: byUser,
+      byDevice: byDevice,
+      isDeleted: isDeleted,
+      version: version,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
 }

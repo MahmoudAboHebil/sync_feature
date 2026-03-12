@@ -26,10 +26,7 @@ void main() {
     final queueDatasource = LocalQueueDatasource();
     final tableDatasource = LocalTableOneDatasource();
     final syncDatasource = SyncDatasource();
-    final tableRepository = TableRepositoryImpl(
-      queueDatasource,
-      tableDatasource,
-    );
+    final tableRepository = TableRepositoryImpl(queueDatasource);
     final queueRepo = QueueRepositoryImpl(queueDatasource);
     final syncRepository = SyncRepositoryImpl(
       tableRepository,
@@ -358,10 +355,7 @@ void main() {
     final queueDatasource = LocalQueueDatasource();
     final tableDatasource = LocalTableOneDatasource();
     final syncDatasource = SyncDatasource();
-    final tableRepository = TableRepositoryImpl(
-      queueDatasource,
-      tableDatasource,
-    );
+    final tableRepository = TableRepositoryImpl(queueDatasource);
     final queueRepo = QueueRepositoryImpl(queueDatasource);
     final syncRepository = SyncRepositoryImpl(
       tableRepository,
@@ -465,10 +459,7 @@ void main() {
     final queueDatasource = LocalQueueDatasource();
     final tableDatasource = LocalTableOneDatasource();
     final syncDatasource = SyncDatasource();
-    final tableRepository = TableRepositoryImpl(
-      queueDatasource,
-      tableDatasource,
-    );
+    final tableRepository = TableRepositoryImpl(queueDatasource);
     final queueRepo = QueueRepositoryImpl(queueDatasource);
     final syncRepository = SyncRepositoryImpl(
       tableRepository,
@@ -555,10 +546,7 @@ void main() {
     final queueDatasource = LocalQueueDatasource();
     final tableDatasource = LocalTableOneDatasource();
     final syncDatasource = SyncDatasource();
-    final tableRepository = TableRepositoryImpl(
-      queueDatasource,
-      tableDatasource,
-    );
+    final tableRepository = TableRepositoryImpl(queueDatasource);
     final queueRepo = QueueRepositoryImpl(queueDatasource);
     final syncRepository = SyncRepositoryImpl(
       tableRepository,
@@ -643,10 +631,7 @@ void main() {
     final queueDatasource = LocalQueueDatasource();
     final tableDatasource = LocalTableOneDatasource();
     final syncDatasource = SyncDatasource();
-    final tableRepository = TableRepositoryImpl(
-      queueDatasource,
-      tableDatasource,
-    );
+    final tableRepository = TableRepositoryImpl(queueDatasource);
     final queueRepo = QueueRepositoryImpl(queueDatasource);
     final syncRepository = SyncRepositoryImpl(
       tableRepository,
@@ -731,10 +716,7 @@ void main() {
     final queueDatasource = LocalQueueDatasource();
     final tableDatasource = LocalTableOneDatasource();
     final syncDatasource = SyncDatasource();
-    final tableRepository = TableRepositoryImpl(
-      queueDatasource,
-      tableDatasource,
-    );
+    final tableRepository = TableRepositoryImpl(queueDatasource);
     final queueRepo = QueueRepositoryImpl(queueDatasource);
     final syncRepository = SyncRepositoryImpl(
       tableRepository,
@@ -819,10 +801,7 @@ void main() {
     final queueDatasource = LocalQueueDatasource();
     final tableDatasource = LocalTableOneDatasource();
     final syncDatasource = SyncDatasource();
-    final tableRepository = TableRepositoryImpl(
-      queueDatasource,
-      tableDatasource,
-    );
+    final tableRepository = TableRepositoryImpl(queueDatasource);
     final queueRepo = QueueRepositoryImpl(queueDatasource);
     final syncRepository = SyncRepositoryImpl(
       tableRepository,

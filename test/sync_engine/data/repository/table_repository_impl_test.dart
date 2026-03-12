@@ -23,10 +23,6 @@ void main() {
     registerFallbackValue(DBTable.values.first);
     localQueueDatasource = MockLocalQueueDataSource();
     localTableDatasource = MockLocalTableDataSource();
-    repository = TableRepositoryImpl(
-      localQueueDatasource,
-      localTableDatasource,
-    );
   });
   /*
   test(

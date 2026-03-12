@@ -1,6 +1,7 @@
 import 'package:dart_either/dart_either.dart';
 import 'package:sync_feature/core/enums/DB_Table.dart';
 import 'package:sync_feature/core/error/failure.dart';
+import 'package:sync_feature/core/error/sync_response.dart';
 import 'package:sync_feature/core/use_cases/use_case.dart';
 import 'package:sync_feature/sync_engine/domain/repository/table_repository.dart';
 import 'package:sync_feature/sync_engine/domain/use_cases/get_server_updated_records_usecase.dart';
@@ -19,7 +20,11 @@ class PullSingleTableUseCaseParams {
 }
 
 class PullSingleTableUseCase
-    implements UseCase<Either<Failure, void>, PullSingleTableUseCaseParams> {
+    implements
+        UseCase<
+          Either<Failure, List<SyncResponse>>,
+          PullSingleTableUseCaseParams
+        > {
   final GetServerUpdatedRecordsUseCase _getServerUpdatedRecordsUseCase;
   final TableRepository _tableRepository;
 
@@ -29,9 +34,10 @@ class PullSingleTableUseCase
   );
 
   @override
-  Future<Either<Failure, void>> call(
+  Future<Either<Failure, List<SyncResponse>>> call(
     PullSingleTableUseCaseParams params,
   ) async {
+    List<SyncResponse> resList = [];
     final result = await _getServerUpdatedRecordsUseCase.call(
       GetServerUpdatedRecordsUseCaseParams(
         table: params.table,
@@ -40,6 +46,7 @@ class PullSingleTableUseCase
         lastSyncTime: params.lastSyncTime,
       ),
     );
+    print(' lastSyncTime=> ${params.lastSyncTime}');
 
     if (result.isLeft) {
       return Left(
@@ -50,12 +57,14 @@ class PullSingleTableUseCase
       );
     }
     final updatedRecords = result.getOrThrow();
+    print('pull Data${params.table} =>${updatedRecords}');
 
     for (var updatedRd in updatedRecords) {
       final findResult = await _tableRepository.getEntityFromTable(
         params.table,
         updatedRd["id"],
       );
+
       if (findResult.isLeft) {
         return Left(
           findResult.fold(
@@ -66,6 +75,7 @@ class PullSingleTableUseCase
         );
       }
       final localEntity = findResult.getOrThrow();
+
       if (localEntity == null) {
         final insertResult = await _tableRepository.insertEntityToTable(
           params.table,
@@ -81,6 +91,9 @@ class PullSingleTableUseCase
             ),
           );
         }
+        final result = SyncResponse(isPull: true, insertPullData: updatedRd);
+        resList.add(result);
+
         continue;
       }
       if ((updatedRd['version'] as int) == (localEntity['version'] as int)) {
@@ -88,7 +101,7 @@ class PullSingleTableUseCase
       }
       if ((updatedRd['version'] as int) > (localEntity['version'] as int)) {
         final replaceResult = await _tableRepository
-            .replaceEntityLocalWithServer(params.table, localEntity);
+            .replaceEntityLocalWithServer(params.table, updatedRd);
         if (replaceResult.isLeft) {
           return Left(
             replaceResult.fold(
@@ -98,9 +111,21 @@ class PullSingleTableUseCase
             ),
           );
         }
+        if (updatedRd['is_deleted'] == true) {
+          final result = SyncResponse(
+            isPull: true,
+            updatedPullData: updatedRd,
+            isPullRecordeDeleted: true,
+          );
+          resList.add(result);
+        } else {
+          final result = SyncResponse(isPull: true, updatedPullData: updatedRd);
+          resList.add(result);
+        }
+
         continue;
       }
     }
-    return Right(null);
+    return Right(resList);
   }
 }

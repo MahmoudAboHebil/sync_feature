@@ -14,6 +14,31 @@ class TableOne extends StandardTableRecord with EquatableMixin {
     required super.createdAt,
     required super.updatedAt,
   });
+
+  TableOne copyWith({
+    String? message,
+    String? entityId,
+    String? centerId,
+    String? byUser,
+    String? byDevice,
+    bool? isDeleted,
+    int? version,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return TableOne(
+      entityId: entityId ?? this.entityId,
+      message: message ?? this.message,
+      centerId: centerId ?? this.centerId,
+      byUser: byUser ?? this.byUser,
+      byDevice: byDevice ?? this.byDevice,
+      isDeleted: isDeleted ?? this.isDeleted,
+      version: version ?? this.version,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
   @override
   Map<String, dynamic> toJson() {
     return {

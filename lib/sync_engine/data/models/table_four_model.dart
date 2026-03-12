@@ -106,4 +106,20 @@ class TableFourModel extends StandardTableRecordModel with EquatableMixin {
       ..updatedAt = updatedAt.toUtc()
       ..message = message;
   }
+
+  @override
+  TableFour toEntity() {
+    return TableFour(
+      forKeyTableTwo: forKeyTableTwo,
+      entityId: entityId,
+      message: message,
+      centerId: centerId,
+      byUser: byUser,
+      byDevice: byDevice,
+      isDeleted: isDeleted,
+      version: version,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
 }

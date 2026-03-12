@@ -62,7 +62,8 @@ class SyncAllTablesUseCase
       results = newList;
     }
 
-    final updateTime = await _syncRepository.updateLastTimeSync(fiveMinutesAgo);
+    await _syncRepository.updateLastTimeSync(fiveMinutesAgo);
+
     return Right(results);
   }
 }

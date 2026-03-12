@@ -108,4 +108,20 @@ class TableThreeModel extends StandardTableRecordModel with EquatableMixin {
       ..updatedAt = updatedAt.toUtc()
       ..message = message;
   }
+
+  @override
+  TableThree toEntity() {
+    return TableThree(
+      forKeyTableTwo: forKeyTableTwo,
+      entityId: entityId,
+      message: message,
+      centerId: centerId,
+      byUser: byUser,
+      byDevice: byDevice,
+      isDeleted: isDeleted,
+      version: version,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
 }

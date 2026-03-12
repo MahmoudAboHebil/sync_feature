@@ -33,8 +33,7 @@ import '../models/table_two_model.dart';
 
 class TableRepositoryImpl implements TableRepository {
   final LocalQueueDatasource _queueDatasource;
-  final LocalTableDatasource _localTableDatasource;
-  TableRepositoryImpl(this._queueDatasource, this._localTableDatasource);
+  TableRepositoryImpl(this._queueDatasource);
 
   LocalTableDatasource _getTableDataSource(DBTable table) {
     if (table == DBTable.table_one) {
@@ -277,18 +276,13 @@ class TableRepositoryImpl implements TableRepository {
         'sync-operation',
         body: payload,
       );
-      print('1dddddddddddddddddddddddddddddddddddddd');
-      print(response.toString());
+
       final result = Helper.handleSyncOperationResponse(response.data);
       return Right(result);
     } on FunctionException catch (e) {
-      print('2dddddddddddddddddddddddddddddddddddddd');
-      print(e);
       final result = InternalServerError(details: e.details);
       return Right(result);
     } catch (e) {
-      print('3dddddddddddddddddddddddddddddddddddddd');
-      print(e);
       return Left(ProcessingFailure(message: e.toString()));
     }
   }

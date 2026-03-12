@@ -18,16 +18,22 @@ class QueueRepositoryImpl extends QueueRepository {
     try {
       List<OperationModel> oldOperations = await _localQueueDatasource
           .getOperationsByEntityAscending(operation.entityId);
-      final isThereCreatedOpers = oldOperations
-          .map((e) => e.action == OperationAction.create)
-          .toList()
-          .isNotEmpty;
-      final isThereUpdatedOpers = oldOperations
-          .map((e) => e.action == OperationAction.update)
-          .toList()
-          .isNotEmpty;
+
+      final isThereCreatedOpers = oldOperations.any(
+        (e) => e.action == OperationAction.create,
+      );
+
+      print(operation);
+      print('isThereCreatedOpers $isThereCreatedOpers');
+
+      final isThereUpdatedOpers = oldOperations.any(
+        (e) => e.action == OperationAction.update,
+      );
       if (isThereCreatedOpers) {
+        print('xxxxxxxxxxxxxxxxxxxx 1');
         if (operation.action == OperationAction.update) {
+          print('xxxxxxxxxxxxxxxxxxxx 2');
+
           await _localQueueDatasource.removeOperationsByEntity(
             operation.entityId,
           );
@@ -39,6 +45,8 @@ class QueueRepositoryImpl extends QueueRepository {
           );
           return Right(null);
         } else if (operation.action == OperationAction.delete) {
+          print('xxxxxxxxxxxxxxxxxxxx 3');
+
           await _localQueueDatasource.removeOperationsByEntity(
             operation.entityId,
           );

@@ -16,6 +16,8 @@
 	<string>sync_feature</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>com.apple.security.network.server</key>
+    <true/>
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>

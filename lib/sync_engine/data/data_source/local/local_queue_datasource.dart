@@ -11,6 +11,7 @@ import '../../models/operation_model.dart';
 
 class LocalQueueDatasource {
   Future<void> insertToQueue(OperationModel operation) async {
+    print('insertToQueue ${operation}');
     await IsarService.isar.writeTxn(() async {
       await IsarService.isar.operationCollections.put(operation.toCollection());
     });

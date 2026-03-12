@@ -117,4 +117,21 @@ class TableFiveModel extends StandardTableRecordModel with EquatableMixin {
       ..updatedAt = updatedAt
       ..message = message;
   }
+
+  @override
+  TableFive toEntity() {
+    return TableFive(
+      forKeyTableFour: forKeyTableFour,
+      forKeyTableThree: forKeyTableThree,
+      entityId: entityId,
+      message: message,
+      centerId: centerId,
+      byUser: byUser,
+      byDevice: byDevice,
+      isDeleted: isDeleted,
+      version: version,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
 }

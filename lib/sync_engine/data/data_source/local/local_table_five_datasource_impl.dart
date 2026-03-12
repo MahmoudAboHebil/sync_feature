@@ -46,7 +46,11 @@ class LocalTableFiveDatasource implements LocalTableDatasource {
         for (final batch in Helper.chunk(parentsIds.toList(), batchSize)) {
           final result = await IsarService.isar.tableFiveCollections
               .filter()
-              .anyOf(batch, (q, id) => q.forKeyTableThreeEqualTo(id))
+              .anyOf(
+                batch,
+                (q, id) =>
+                    q.forKeyTableThreeEqualTo(id).and().isDeletedEqualTo(false),
+              )
               .findAll();
           collections = [...collections, ...result];
         }
@@ -68,7 +72,11 @@ class LocalTableFiveDatasource implements LocalTableDatasource {
         for (final batch in Helper.chunk(parentsIds.toList(), batchSize)) {
           final result = await IsarService.isar.tableFiveCollections
               .filter()
-              .anyOf(batch, (q, id) => q.forKeyTableFourEqualTo(id))
+              .anyOf(
+                batch,
+                (q, id) =>
+                    q.forKeyTableFourEqualTo(id).and().isDeletedEqualTo(false),
+              )
               .findAll();
           collections = [...collections, ...result];
         }

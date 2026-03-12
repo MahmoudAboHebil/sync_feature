@@ -48,7 +48,7 @@ class SyncTableUseCase
         ),
       );
     }
-    results = pushResults.getOrThrow();
+    final pushRetData = pushResults.getOrThrow();
 
     final pullResults = await _pullSingleTableUseCase.call(
       PullSingleTableUseCaseParams(
@@ -66,6 +66,9 @@ class SyncTableUseCase
         ),
       );
     }
+    final pullRetData = pullResults.getOrThrow();
+
+    results = [...pushRetData, ...pullRetData];
 
     return Right(results);
   }

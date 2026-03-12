@@ -17,10 +17,7 @@ void main() {
     final tableDatasource = LocalTableOneDatasource();
 
     final syncDatasource = SyncDatasource();
-    final tableRepository = TableRepositoryImpl(
-      queueDatasource,
-      tableDatasource,
-    );
+    final tableRepository = TableRepositoryImpl(queueDatasource);
     final queueRepo = QueueRepositoryImpl(queueDatasource);
 
     final syncRepository = SyncRepositoryImpl(
@@ -59,10 +56,7 @@ void main() {
     final tableDatasource = LocalTableOneDatasource();
 
     final syncDatasource = SyncDatasource();
-    final tableRepository = TableRepositoryImpl(
-      queueDatasource,
-      tableDatasource,
-    );
+    final tableRepository = TableRepositoryImpl(queueDatasource);
     final queueRepo = QueueRepositoryImpl(queueDatasource);
 
     final syncRepository = SyncRepositoryImpl(

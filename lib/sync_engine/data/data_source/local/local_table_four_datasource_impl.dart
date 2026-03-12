@@ -46,7 +46,11 @@ class LocalTableFourDatasource implements LocalTableDatasource {
         for (final batch in Helper.chunk(parentsIds.toList(), batchSize)) {
           final result = await IsarService.isar.tableFourCollections
               .filter()
-              .anyOf(batch, (q, id) => q.forKeyTableTwoEqualTo(id))
+              .anyOf(
+                batch,
+                (q, id) =>
+                    q.forKeyTableTwoEqualTo(id).and().isDeletedEqualTo(false),
+              )
               .findAll();
           collections = [...collections, ...result];
         }

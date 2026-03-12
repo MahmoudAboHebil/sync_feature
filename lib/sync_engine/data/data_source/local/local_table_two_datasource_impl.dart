@@ -46,7 +46,11 @@ class LocalTableTwoDatasource implements LocalTableDatasource {
         for (final batch in Helper.chunk(parentsIds.toList(), batchSize)) {
           final result = await IsarService.isar.tableTwoCollections
               .filter()
-              .anyOf(batch, (q, id) => q.forKeyTableOneEqualTo(id))
+              .anyOf(
+                batch,
+                (q, id) =>
+                    q.forKeyTableOneEqualTo(id).and().isDeletedEqualTo(false),
+              )
               .findAll();
           collections = [...collections, ...result];
         }

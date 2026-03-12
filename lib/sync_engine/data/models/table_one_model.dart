@@ -97,4 +97,19 @@ class TableOneModel extends StandardTableRecordModel with EquatableMixin {
       ..updatedAt = updatedAt.toUtc()
       ..message = message;
   }
+
+  @override
+  TableOne toEntity() {
+    return TableOne(
+      entityId: entityId,
+      message: message,
+      centerId: centerId,
+      byUser: byUser,
+      byDevice: byDevice,
+      isDeleted: isDeleted,
+      version: version,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+    );
+  }
 }

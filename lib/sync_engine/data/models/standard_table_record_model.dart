@@ -19,4 +19,5 @@ abstract class StandardTableRecordModel {
   });
   Map<String, dynamic> toJson();
   Object toCollection();
+  Object toEntity();
 }
