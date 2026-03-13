@@ -309,6 +309,7 @@ class TableOneDatasource {
             operation: operation,
           ),
         );
+        print('dddddddddddddddddddd${sendResult}');
 
         if (sendResult.isLeft) {
           return Left(
@@ -320,10 +321,9 @@ class TableOneDatasource {
           );
         }
         final sendData = sendResult.getOrThrow();
-
-        if (sendData.networkResponse is NetworkSuccess &&
-            sendData.networkResponse is! OperationAlreadyProcessed &&
+        if (sendData.networkResponse is! InternalServerError &&
             sendData.isError != true) {
+          print('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
           final deleteRelationResult = await _tableRepository
               .deleteEntityCascadeNotNull(DBTable.table_one, entity.entityId);
           return Right(null);

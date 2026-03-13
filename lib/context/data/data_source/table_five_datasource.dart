@@ -206,8 +206,7 @@ class TableFiveDatasource {
         }
         final sendData = sendResult.getOrThrow();
 
-        if (sendData.networkResponse is NetworkSuccess &&
-            sendData.networkResponse is! OperationAlreadyProcessed &&
+        if (sendData.networkResponse is! InternalServerError &&
             sendData.isError != true) {
           final deleteRelationResult = await _tableRepository
               .deleteEntityCascadeNotNull(DBTable.table_five, entity.entityId);

@@ -12,12 +12,11 @@ import 'package:sync_feature/sync_engine/data/models/table_three_model.dart';
 import 'package:sync_feature/sync_engine/domain/entities/table_five.dart';
 import 'package:sync_feature/sync_engine/domain/entities/table_four.dart';
 import 'package:sync_feature/sync_engine/domain/repository/sync_repository.dart';
+import 'package:sync_feature/sync_engine/presentation/pages/sync_results_page.dart';
 import 'package:sync_feature/sync_engine/presentation/pages/table_four.dart';
 import 'package:sync_feature/sync_engine/presentation/pages/table_one.dart';
 import 'package:sync_feature/sync_engine/presentation/pages/table_three.dart';
 import 'package:sync_feature/sync_engine/presentation/pages/table_two.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../config/constants.dart';
@@ -91,24 +90,19 @@ class TableFivePage extends StatelessWidget {
             final result = await sl<TableFiveDatasource>().create(newRecord);
             result.fold(
               ifLeft: (err) {
-                showTopSnackBar(
-                  displayDuration: Duration(minutes: 3),
-                  Overlay.of(context),
-                  CustomSnackBar.error(
-                    maxLines: 10,
-
-                    message: "Something went wrong ${err.message}",
+                MaterialPageRoute(
+                  builder: (context) => SyncResultsPage(
+                    errorMessage: "Something went wrong ${err.message}",
                   ),
                 );
               },
               ifRight: (response) {
                 if (response != null) {
-                  showTopSnackBar(
-                    displayDuration: Duration(minutes: 3),
-                    Overlay.of(context),
-                    CustomSnackBar.info(
-                      message: "Response ${response}",
-                      maxLines: 10,
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          SyncResultsPage(response: [response]),
                     ),
                   );
                 }
@@ -208,13 +202,10 @@ class TableFivePage extends StatelessWidget {
                             );
                         relationResult.fold(
                           ifLeft: (err) {
-                            showTopSnackBar(
-                              Overlay.of(context),
-
-                              CustomSnackBar.error(
-                                maxLines: 10,
-
-                                message: "Something went wrong ${err.message}",
+                            MaterialPageRoute(
+                              builder: (context) => SyncResultsPage(
+                                errorMessage:
+                                    "Something went wrong ${err.message}",
                               ),
                             );
                           },
@@ -233,25 +224,21 @@ class TableFivePage extends StatelessWidget {
                                   .softDelete(model.toEntity());
                               result.fold(
                                 ifLeft: (err) {
-                                  showTopSnackBar(
-                                    Overlay.of(context),
-                                    CustomSnackBar.error(
-                                      maxLines: 10,
-
-                                      message:
+                                  MaterialPageRoute(
+                                    builder: (context) => SyncResultsPage(
+                                      errorMessage:
                                           "Something went wrong ${err.message}",
                                     ),
                                   );
                                 },
                                 ifRight: (response) {
                                   if (response != null) {
-                                    showTopSnackBar(
-                                      displayDuration: Duration(minutes: 3),
-                                      Overlay.of(context),
-                                      CustomSnackBar.info(
-                                        maxLines: 10,
-
-                                        message: "Response ${response}",
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => SyncResultsPage(
+                                          response: [response],
+                                        ),
                                       ),
                                     );
                                   }
@@ -273,26 +260,20 @@ class TableFivePage extends StatelessWidget {
                           );
                           result.fold(
                             ifLeft: (err) {
-                              showTopSnackBar(
-                                displayDuration: Duration(minutes: 3),
-                                Overlay.of(context),
-                                CustomSnackBar.error(
-                                  maxLines: 10,
-
-                                  message:
+                              MaterialPageRoute(
+                                builder: (context) => SyncResultsPage(
+                                  errorMessage:
                                       "Something went wrong ${err.message}",
                                 ),
                               );
                             },
                             ifRight: (response) {
                               if (response != null) {
-                                showTopSnackBar(
-                                  displayDuration: Duration(minutes: 3),
-                                  Overlay.of(context),
-                                  CustomSnackBar.info(
-                                    maxLines: 10,
-
-                                    message: "Response ${response}",
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        SyncResultsPage(response: [response]),
                                   ),
                                 );
                               }

@@ -9,12 +9,11 @@ import 'package:sync_feature/sync_engine/domain/entities/table_one.dart';
 import 'package:sync_feature/sync_engine/domain/repository/sync_repository.dart';
 import 'package:sync_feature/sync_engine/domain/repository/table_repository.dart';
 import 'package:sync_feature/sync_engine/presentation/pages/home_page.dart';
+import 'package:sync_feature/sync_engine/presentation/pages/sync_results_page.dart';
 import 'package:sync_feature/sync_engine/presentation/pages/table_five.dart';
 import 'package:sync_feature/sync_engine/presentation/pages/table_four.dart';
 import 'package:sync_feature/sync_engine/presentation/pages/table_three.dart';
 import 'package:sync_feature/sync_engine/presentation/pages/table_two.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../config/constants.dart';
@@ -26,56 +25,76 @@ import '../../../core/isar_service/isar_service.dart';
 import '../../../injection_container.dart';
 import '../widgets/sync_button_widget.dart';
 
-class TableOnePage extends StatelessWidget {
+class TableOnePage extends StatefulWidget {
   const TableOnePage({super.key});
+
+  @override
+  State<TableOnePage> createState() => _TableOnePageState();
+}
+
+class _TableOnePageState extends State<TableOnePage> {
+  bool isCreate = false;
+
+  Future<void> create() async {
+    final Uuid uuid = Uuid();
+    final message = await Helper.showAddRecordDialog(context);
+    final getResult = await sl<SyncRepository>().getDeviceId();
+    if (message != null && getResult.isRight) {
+      final byDevice = getResult.getOrThrow();
+      final newRecord = TableOne(
+        entityId: uuid.v4(),
+        message: message,
+        centerId: centerId,
+        byUser: currentUser,
+        byDevice: byDevice,
+        isDeleted: false,
+        version: 1,
+        createdAt: DateTime.now().toUtc(),
+        updatedAt: DateTime.now().toUtc(),
+      );
+      final result = await sl<TableOneDatasource>().create(newRecord);
+      result.fold(
+        ifLeft: (err) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SyncResultsPage(
+                errorMessage: "Something went wrong ${err.message}",
+              ),
+            ),
+          );
+        },
+        ifRight: (response) {
+          if (response != null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SyncResultsPage(response: [response]),
+              ),
+            );
+          }
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final Uuid uuid = Uuid();
-          final message = await Helper.showAddRecordDialog(context);
-          final getResult = await sl<SyncRepository>().getDeviceId();
-          if (message != null && getResult.isRight) {
-            final byDevice = getResult.getOrThrow();
-            final newRecord = TableOne(
-              entityId: uuid.v4(),
-              message: message,
-              centerId: centerId,
-              byUser: currentUser,
-              byDevice: byDevice,
-              isDeleted: false,
-              version: 1,
-              createdAt: DateTime.now().toUtc(),
-              updatedAt: DateTime.now().toUtc(),
-            );
-            final result = await sl<TableOneDatasource>().create(newRecord);
-            result.fold(
-              ifLeft: (err) {
-                showTopSnackBar(
-                  displayDuration: Duration(minutes: 3),
-                  Overlay.of(context),
-                  CustomSnackBar.error(
-                    message: "Something went wrong ${err.message}",
-                    maxLines: 10,
-                  ),
-                );
-              },
-              ifRight: (response) {
-                if (response != null) {
-                  showTopSnackBar(
-                    displayDuration: Duration(minutes: 3),
-                    Overlay.of(context),
+          if (isCreate) return;
 
-                    CustomSnackBar.info(
-                      message: "Response ${response}",
-                      maxLines: 10,
-                    ),
-                  );
-                }
-              },
-            );
+          setState(() {
+            isCreate = true;
+          });
+
+          try {
+            await create();
+          } finally {
+            setState(() {
+              isCreate = false;
+            });
           }
         },
         child: Icon(Icons.add),
@@ -170,11 +189,13 @@ class TableOnePage extends StatelessWidget {
                             );
                         relationResult.fold(
                           ifLeft: (err) {
-                            showTopSnackBar(
-                              Overlay.of(context),
-                              CustomSnackBar.error(
-                                message: "Something went wrong ${err.message}",
-                                maxLines: 10,
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SyncResultsPage(
+                                  errorMessage:
+                                      "Something went wrong ${err.message}",
+                                ),
                               ),
                             );
                           },
@@ -193,25 +214,24 @@ class TableOnePage extends StatelessWidget {
                                   .softDelete(model.toEntity());
                               result.fold(
                                 ifLeft: (err) {
-                                  showTopSnackBar(
-                                    Overlay.of(context),
-                                    CustomSnackBar.error(
-                                      maxLines: 10,
-
-                                      message:
-                                          "Something went wrong ${err.message}",
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SyncResultsPage(
+                                        errorMessage:
+                                            "Something went wrong ${err.message}",
+                                      ),
                                     ),
                                   );
                                 },
                                 ifRight: (response) {
                                   if (response != null) {
-                                    showTopSnackBar(
-                                      displayDuration: Duration(minutes: 3),
-                                      Overlay.of(context),
-                                      CustomSnackBar.info(
-                                        maxLines: 10,
-
-                                        message: "Response ${response}",
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => SyncResultsPage(
+                                          response: [response],
+                                        ),
                                       ),
                                     );
                                   }
@@ -234,28 +254,24 @@ class TableOnePage extends StatelessWidget {
                           result.fold(
                             ifLeft: (err) {
                               print('err $err');
-
-                              showTopSnackBar(
-                                displayDuration: Duration(minutes: 3),
-                                Overlay.of(context),
-                                CustomSnackBar.error(
-                                  maxLines: 10,
-
-                                  message:
-                                      "Something went wrong ${err.message}",
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SyncResultsPage(
+                                    errorMessage:
+                                        "Something went wrong ${err.message}",
+                                  ),
                                 ),
                               );
                             },
                             ifRight: (response) {
                               print('response $response');
                               if (response != null) {
-                                showTopSnackBar(
-                                  displayDuration: Duration(minutes: 3),
-                                  Overlay.of(context),
-                                  CustomSnackBar.info(
-                                    maxLines: 10,
-
-                                    message: "Response ${response}",
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        SyncResultsPage(response: [response]),
                                   ),
                                 );
                               }
